@@ -31,3 +31,38 @@
     transform: rotate(360deg);
   }
 }
+
+
+/*************** SEARCH BAR ********************/
+
+.searchInput{
+  border-radius:3px;
+  padding: 8px;
+  border: 1px solid #b0b0b0;
+  background : #ffffff;
+  
+}
+
+
+
+/************** PERSON *************************/
+.avatar-mask{
+  position: relative;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  border-radius : 50%;
+}
+.avatar-img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 100%;
+  width: auto;
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+  width: 100%;
+  height: auto;
+}
+
