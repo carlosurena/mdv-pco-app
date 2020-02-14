@@ -17,8 +17,6 @@ function App() {
           <Route exact path="/checkins" component={Checkins} />
           <Route exact path="/people" component={People} />
           <Route path="/people/:person_id" component={Person} />
-
-
         </Switch>
       </Container>
     </BrowserRouter>
