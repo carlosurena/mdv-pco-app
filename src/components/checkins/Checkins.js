@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
-import Button from 'react-bootstrap/Button'
+import {Button, Grid} from '@mantine/core'
 import firebase from '../../firebase/firebase'
 import moment from 'moment'
-import { Row, Col, Dropdown, DropdownButton } from 'react-bootstrap'
 import SheetStats from './SheetStats'
-// import { connect } from 'react-redux'
 
 export class Checkins extends Component {
     state = {
@@ -172,10 +170,9 @@ export class Checkins extends Component {
         return (
             <div>
 
-                <div>
-                    <Row>
-                        <Col>
-                            <DropdownButton onSelect={this.onEventsDropdownSelect} id="dropdown-basic-button" title={this.state.selectedEvent ? (this.state.selectedEvent) : ('Select an event')}>
+                <Grid>
+                        <Grid.Col>
+                            {/* <DropdownButton onSelect={this.onEventsDropdownSelect} id="dropdown-basic-button" title={this.state.selectedEvent ? (this.state.selectedEvent) : ('Select an event')}>
                                 <Dropdown.Item eventKey='clear'>N/A</Dropdown.Item>
                                 {this.state.events ?
                                     (
@@ -185,11 +182,11 @@ export class Checkins extends Component {
                                             )
                                         })
                                     ) : ('Loading..')}
-                            </DropdownButton>
-                        </Col>
+                            </DropdownButton> */}
+                        </Grid.Col>
 
-                        <Col>
-                            <DropdownButton disabled={this.state.selectedEvent ? ((this.state.locations && this.state.locations.length > 0) ? (false) : (true)) : (true)} onSelect={this.onLocationsDropdownSelect} id="dropdown-basic-button" title={this.state.selectedLocation ? (this.state.selectedLocation) : ('Select a location')}>
+                        <Grid.Col>
+                            {/* <DropdownButton disabled={this.state.selectedEvent ? ((this.state.locations && this.state.locations.length > 0) ? (false) : (true)) : (true)} onSelect={this.onLocationsDropdownSelect} id="dropdown-basic-button" title={this.state.selectedLocation ? (this.state.selectedLocation) : ('Select a location')}>
                                 <Dropdown.Item eventKey='clear'>N/A</Dropdown.Item>
 
                                 {this.state.locations ?
@@ -200,11 +197,11 @@ export class Checkins extends Component {
                                             )
                                         })
                                     ) : ('Loading..')}
-                            </DropdownButton>
-                        </Col>
+                            </DropdownButton> */}
+                        </Grid.Col>
 
-                        <Col>
-                            <DropdownButton disabled={this.state.selectedLocation ? ((this.state.sheets && this.state.sheets.length > 0) ? (false) : (true)) : (true)} onSelect={this.onSheetsDropdownSelect} id="dropdown-basic-button" title={this.state.selectedSheet ? (this.state.selectedSheet) : ('Select a sheet')}>
+                        <Grid.Col>
+                            {/* <DropdownButton disabled={this.state.selectedLocation ? ((this.state.sheets && this.state.sheets.length > 0) ? (false) : (true)) : (true)} onSelect={this.onSheetsDropdownSelect} id="dropdown-basic-button" title={this.state.selectedSheet ? (this.state.selectedSheet) : ('Select a sheet')}>
                                 <Dropdown.Item eventKey='clear'>N/A</Dropdown.Item>
                                 {this.state.sheets ?
                                     (
@@ -214,15 +211,14 @@ export class Checkins extends Component {
                                             )
                                         })
                                     ) : ('Loading..')}
-                            </DropdownButton>
-                        </Col>
+                            </DropdownButton> */}
+                        </Grid.Col>
 
-                        <Col>
+                        <Grid.Col>
                             <Button disabled={this.state.selectedEvent ? ((this.state.selectedLocation) ? (false) : (true)) : (true)}>
                                 New Sheet
                             </Button>
-                        </Col>
-                    </Row>
+                        </Grid.Col>
 
 
 
@@ -235,21 +231,11 @@ export class Checkins extends Component {
 
 
 
-                </div>
+                </Grid>
 
             </div>
         )
     }
 }
 
-// const mapStateToProps = (reduxState) => {
-//     console.log(reduxState)
-//     return{
-//         auth : reduxState.firebase.auth,
-//         user : reduxState.auth.user,
-
-//     }
-//   }
-  
-  //export default connect(mapStateToProps)(Checkins)
   export default Checkins

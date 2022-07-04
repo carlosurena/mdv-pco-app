@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { getDonations, getDonationTotalsAggregate, getDonationTotalsByPerson } from '../../../firebase/donationRequests'
+import { getDonations, getDonationTotalsAggregate } from '../../../firebase/donationRequests'
 import ReportsTemplate from './ReportsTemplate';
 import { format } from 'date-fns'
 import { Modal, Button, SegmentedControl } from '@mantine/core'

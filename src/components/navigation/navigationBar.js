@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-// import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom' 
-import {Navbar, Button, UnstyledButton, Avatar, Text, Group} from '@mantine/core'
+import {Navbar, UnstyledButton, Avatar, Text, Group} from '@mantine/core'
 import { Man, DiscountCheck, TrendingDown, TrendingUp, ReportAnalytics, Home} from 'tabler-icons-react'
 export class NavigationBar extends Component {
   render() {
@@ -25,7 +24,7 @@ export class NavigationBar extends Component {
 					<NavLink to="/checkins">
 						<UnstyledButton onClick={() => console.log('try focusing button with tab')}>
 							<Group>
-								<Avatar size={30} color="blue"><Home size={20}/></Avatar>
+								<Avatar size={30} color="blue"><DiscountCheck size={20}/></Avatar>
 								<div>
 									<Text color="blue">Check-ins</Text>
 								</div>

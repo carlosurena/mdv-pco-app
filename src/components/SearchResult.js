@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import SearchItem from './SearchItem'
-import Button from 'react-bootstrap/Button'
-
+import { Button } from '@mantine/core'
 export class SearchResult extends Component {
     render() {
         return (

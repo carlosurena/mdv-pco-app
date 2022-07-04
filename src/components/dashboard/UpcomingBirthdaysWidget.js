@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import moment from 'moment'
+import { format } from 'date-fns'
 export class UpcomingBirthdaysWidget extends Component {
 
     render() {
@@ -14,9 +14,8 @@ export class UpcomingBirthdaysWidget extends Component {
                             return(
                                 <div key={person.id}>
                                     <p>{person.attributes.first_name} {person.attributes.last_name} : 
-                                        {" " + moment( 
-                                            (new Date(person.attributes.birthdate)).getTime() + (new Date(person.attributes.birthdate)).getTimezoneOffset() * 60000
-                                            ).format('MMMM Do')}</p>
+									{" " + format( (new Date(person.attributes.birthdate)).getTime() + (new Date(person.attributes.birthdate)).getTimezoneOffset() * 60000, "MMMM Do")}
+                                    </p>
 
                                 </div>
                             )

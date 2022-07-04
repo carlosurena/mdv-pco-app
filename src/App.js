@@ -1,5 +1,4 @@
 import React from 'react';
-import { Container } from 'react-bootstrap'
 import NavigationBar from './components/navigation/navigationBar'
 import People from './components/people/People'
 import FinancialReportsPage from './components/money/reports/FinancialReportsPage'
@@ -22,7 +21,6 @@ function App() {
 			main: { backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] },
 			})}
 		>
-			<Container>
 				<Switch>
 					<Route exact path="/" component={Dashboard} />
 					<Route exact path="/checkins" component={Checkins} />
@@ -32,7 +30,6 @@ function App() {
 					<Route exact path="/reports" component={FinancialReportsPage} />
 					<Route path="/people/:person_id" component={Person} />
 				</Switch>
-			</Container>
 		</AppShell>
 			{/* <NavigationBar /> */}
 			
