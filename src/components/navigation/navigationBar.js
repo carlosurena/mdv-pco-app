@@ -1,29 +1,90 @@
 import React, { Component } from 'react'
-import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
+// import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom' 
-
+import {Navbar, Button, UnstyledButton, Avatar, Text, Group} from '@mantine/core'
+import { Man, DiscountCheck, TrendingDown, TrendingUp, ReportAnalytics, Home} from 'tabler-icons-react'
 export class NavigationBar extends Component {
   render() {
     return (
-      <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="#home">mdv</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          
-          <Nav className="mr-auto">
-            <div className="nav-link"><NavLink to="/">Dashboard</NavLink></div>
-            <div className="nav-link"><NavLink to="/checkins">Check-ins</NavLink></div>
-            <div className="nav-link"><NavLink to="/people">People</NavLink></div>
-            <NavDropdown title="Account" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">My Profile</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">Log Out</NavDropdown.Item>
-            </NavDropdown>
-          </Nav>
-          
-          
-
-        </Navbar.Collapse>
-      </Navbar>
+		<Navbar height={600} p="xs" width={{ base: 300 }}>
+			<Navbar.Section>MDV</Navbar.Section>
+			<Navbar.Section grow mt="md">
+				<div className="nav-link">
+					<NavLink to="/">
+						<UnstyledButton onClick={() => console.log('try focusing button with tab')}>
+							<Group>
+								<Avatar size={30} color="blue"><Home size={20}/></Avatar>
+								<div>
+									<Text color="blue">Dashboard</Text>
+								</div>
+							</Group>
+						</UnstyledButton>
+					</NavLink>
+				</div>
+				<div className="nav-link">
+					<NavLink to="/checkins">
+						<UnstyledButton onClick={() => console.log('try focusing button with tab')}>
+							<Group>
+								<Avatar size={30} color="blue"><Home size={20}/></Avatar>
+								<div>
+									<Text color="blue">Check-ins</Text>
+								</div>
+							</Group>
+						</UnstyledButton>
+					</NavLink>
+				</div>
+				<div className="nav-link">
+					<NavLink to="/people">
+						<UnstyledButton onClick={() => console.log('try focusing button with tab')}>
+							<Group>
+								<Avatar size={30} color="blue"><Man size={20}/></Avatar>
+								<div>
+									<Text color="blue">People</Text>
+								</div>
+							</Group>
+						</UnstyledButton>
+					</NavLink>
+				</div>
+				<div className="nav-link">
+					<NavLink to="/donations">
+						<UnstyledButton onClick={() => console.log('try focusing button with tab')}>
+							<Group>
+								<Avatar size={30} color="blue"><TrendingUp size={20}/></Avatar>
+								<div>
+									<Text color="blue">Donations</Text>
+								</div>
+							</Group>
+						</UnstyledButton>
+					</NavLink>
+				</div>
+				<div className="nav-link">
+					<NavLink to="/expenses">
+						<UnstyledButton onClick={() => console.log('try focusing button with tab')}>
+							<Group>
+								<Avatar size={30} color="blue"><TrendingDown size={20}/></Avatar>
+								<div>
+									<Text color="blue">Expenses</Text>
+								</div>
+							</Group>
+						</UnstyledButton>
+					</NavLink>
+				</div>
+				<div className="nav-link">
+					<NavLink to="/reports">
+						<UnstyledButton onClick={() => console.log('try focusing button with tab')}>
+							<Group>
+								<Avatar size={30} color="blue"><ReportAnalytics size={20}/></Avatar>
+								<div>
+									<Text color="blue">Reports</Text>
+								</div>
+							</Group>
+						</UnstyledButton>
+					</NavLink>
+				</div>
+				
+			</Navbar.Section>
+			<Navbar.Section>{/* Footer with user */}</Navbar.Section>
+		</Navbar>
     )
   }
 }

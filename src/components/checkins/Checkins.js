@@ -4,7 +4,7 @@ import firebase from '../../firebase/firebase'
 import moment from 'moment'
 import { Row, Col, Dropdown, DropdownButton } from 'react-bootstrap'
 import SheetStats from './SheetStats'
-import { connect } from 'react-redux'
+// import { connect } from 'react-redux'
 
 export class Checkins extends Component {
     state = {
@@ -242,14 +242,14 @@ export class Checkins extends Component {
     }
 }
 
-const mapStateToProps = (reduxState) => {
-    console.log(reduxState)
-    return{
-        auth : reduxState.firebase.auth,
-        user : reduxState.auth.user,
+// const mapStateToProps = (reduxState) => {
+//     console.log(reduxState)
+//     return{
+//         auth : reduxState.firebase.auth,
+//         user : reduxState.auth.user,
 
-    }
-  }
+//     }
+//   }
   
   //export default connect(mapStateToProps)(Checkins)
   export default Checkins

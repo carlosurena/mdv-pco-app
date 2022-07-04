@@ -4,7 +4,6 @@ import Button from 'react-bootstrap/Button'
 
 export class SearchResult extends Component {
     render() {
-        console.log(this.props.data)
         return (
             <div>
                 <ul>

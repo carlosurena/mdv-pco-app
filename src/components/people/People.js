@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios'
 import Vault from '../vault/vault'
 import PeopleList from './PeopleList'
-import Searchbar from '../Searchbar'
-import SearchResult from '../SearchResult'
+import AutocompleteSearch from '../AutocompleteSearch'
 
 const vault = new Vault();
 
@@ -26,6 +25,8 @@ export class People extends Component {
                 const people = res.data;
                 this.setState({ people });
                 console.log("successfully retrieved all people.")
+				this.reshapePeopleData(people.data);
+
             }).catch(err => {
                 console.log(err)
                 alert("We've encountered an error. Please check your internet connection and try again later.")
@@ -33,6 +34,21 @@ export class People extends Component {
             );
 
     }
+
+	reshapePeopleData = (data) => {
+		let reshapedPeople = []
+		data.forEach( person => {
+			let value =
+				(person.attributes.first_name ? person.attributes.first_name : '' ) + 
+				(person.attributes.middle_name ? ' ' + person.attributes.middle_name : '') + 
+				(person.attributes.last_name ? ' ' + person.attributes.last_name : '');
+			let image = person.attributes.avatar;
+			let id = person.id;
+			reshapedPeople.push({ value, image, id})
+		})
+		console.log(reshapedPeople)
+		this.setState({ reshapedPeople })
+	}
 
     // parses Searchbar input and cross-references with the PCO database for first/last name matches
     searchData = (e) => {
@@ -62,9 +78,7 @@ export class People extends Component {
     render() {
         return (
             <div>
-                <Searchbar data={this.state.people} search={this.searchData} />
-                {(this.state.list) ? <SearchResult data={this.state.list} /> : null}
-
+                {this.state.reshapedPeople && <AutocompleteSearch data={this.state.reshapedPeople} enableRedirect={true} />}
                
                 <PeopleList people={this.state.people} />
             </div>

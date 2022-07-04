@@ -38,7 +38,7 @@ export class Dashboard extends Component {
                 this.setState({ birthdays, isFetchingBD: false });
             }).catch(err => {
                 console.log(err)
-                alert("We've encountered an error. Please check your internet connection and try again later.")
+                console.error("We've encountered an error. Please check your internet connection and try again later.")
                 this.setState({ isFetchingBD: false });
             }
             );
