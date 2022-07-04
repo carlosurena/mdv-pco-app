@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {Button, Grid} from '@mantine/core'
 import firebase from '../../firebase/firebase'
-import moment from 'moment'
 import SheetStats from './SheetStats'
 
 export class Checkins extends Component {
@@ -151,12 +150,12 @@ export class Checkins extends Component {
         console.log(sheetObj)
 
         if (e !== "clear") {
-            var date = moment(new Date(sheetObj[0].date.toDate())).format("MMMM Do YYYY")
+            // var date = moment(new Date(sheetObj[0].date.toDate())).format("MMMM Do YYYY")
 
-            this.setState({
-                selectedSheet: date
-            })        
-            this.getAttendees(sheetObj[0].id)
+            // this.setState({
+            //     selectedSheet: date
+            // })        
+            // this.getAttendees(sheetObj[0].id)
 
         }
 
