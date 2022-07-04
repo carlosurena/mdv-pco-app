@@ -4,7 +4,7 @@ import ReportsTemplate from './ReportsTemplate';
 import { format } from 'date-fns'
 import { Modal, Button, SegmentedControl } from '@mantine/core'
 import { DateRangePicker } from '@mantine/dates'
-import { getExpenses, getExpenseTotalsAggregate, getExpenseTotalsAggregateByDate } from '../../../firebase/expenseRequests';
+import { getExpenses, getExpenseTotalsAggregate } from '../../../firebase/expenseRequests';
 
 function IncomeExpenseReport() {
 	const [donationData, setDonationData] = useState([]);
