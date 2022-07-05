@@ -29,9 +29,7 @@ function ExpenseTableEditableRow(props) {
 		updateExpenseData({'amount' : value})
 	}
 
-	const updateDate = (value) => {
-		value && updateExpenseData({'date' : value.toDate()})
-	}
+	
 
 
 	const saveEdit = () => {
@@ -40,11 +38,16 @@ function ExpenseTableEditableRow(props) {
 	}
 
 	useEffect(() => {
+
+		const updateDate = (value) => {
+			value && updateExpenseData({'date' : value.toDate()})
+		}
+		
 		setExpenseData(props.expense)
 		props.expense.id && setId(props.expense.id)
 		updateDate(props.expense.date)
 		// initializeEditableFieldData();
-	}, [])
+	}, [props.expense])
 
 	return (
 		<tr key={id}>

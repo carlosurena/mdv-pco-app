@@ -47,9 +47,7 @@
 			updateDonationData({'amount' : value})
 		}
 
-		const updateDate = (value) => {
-			value && updateDonationData({'date' : value.toDate()})
-		}
+		
 
 
 		const saveEdit = () => {
@@ -58,11 +56,14 @@
 		}
 
 		useEffect(() => {
+			const updateDate = (value) => {
+				value && updateDonationData({'date' : value.toDate()})
+			}
 			setDonationData(props.donation)
 			props.donation.id && setId(props.donation.id)
 			updateDate(props.donation.date)
 			// initializeEditableFieldData();
-		}, [])
+		}, [props.donation])
 
 		return (
 			<tr key={id}>

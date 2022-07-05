@@ -88,6 +88,7 @@ function DistrictReport() {
 				title={'Income'} 
 				data={aggregateData}
 				total={totalDonations}
+				totalDonations={totalExpenses}
 			/>
 			
 		</div>
