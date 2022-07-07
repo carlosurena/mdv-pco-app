@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import { getDonations, getDonationTotalsAggregateByDate } from '../../../firebase/donationRequests'
 import ReportsTemplate from './ReportsTemplate';
-import { format } from 'date-fns'
-import { Modal, Button, SegmentedControl } from '@mantine/core'
+import { format, isToday } from 'date-fns'
+import { Modal, Button, SegmentedControl, Indicator } from '@mantine/core'
 import { DateRangePicker } from '@mantine/dates'
 import { getExpenses, getExpenseTotalsAggregate } from '../../../firebase/expenseRequests';
 
@@ -58,6 +58,14 @@ function IncomeExpenseReport() {
 				required
 				inputFormat="MM/DD/YYYY"
 				labelFormat="MM/YYYY"	
+				renderDay={(date) => {
+					const day = date.getDate();
+					return (
+					  <Indicator size={6} color="red" offset={8} disabled={!isToday(date)}>
+						<div>{day}</div>
+					  </Indicator>
+					);
+				  }}
 				onChange={(query) => setDates(query)}
 				value={dates}
 			/>
@@ -70,7 +78,7 @@ function IncomeExpenseReport() {
 				]}
 			/>
 
-			<Button onClick={() => generateReport()}>Generate Report</Button>
+			<Button disabled={!(dates && dates[0] !== null && dates[1] !== null)} onClick={() => generateReport()}>Generate Report</Button>
 			</Modal>
 			<h1>{!!title && title}</h1>
 			<ReportsTemplate 

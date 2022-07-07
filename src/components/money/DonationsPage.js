@@ -11,6 +11,7 @@ const db = firebase.firestore();
 function DonationsPage() {
 	const [donationData, setDonationData] = useState([]);
 	const [people, setPeople] = useState([]);
+	const [sources, setSources] = useState([]);
 	const [donationTypes, setDonationTypes] = useState([]);
 
 
@@ -30,7 +31,7 @@ function DonationsPage() {
 
 	const tableRows = donationData.map((donation) => {
 	return (
-			<DonationTableEditableRow donation={donation} key={donation.id} deleteDonation={_deleteDonation} people={people} donationTypes={donationTypes}/>
+			<DonationTableEditableRow donation={donation} key={donation.id} deleteDonation={_deleteDonation} people={people} donationTypes={donationTypes} sources={sources}/>
 		)
 	});
 
@@ -40,7 +41,7 @@ function DonationsPage() {
 		}
 			
 		
-		const unsubscribe = db.collection('donations').onSnapshot(snap => {
+		const unsubscribe = db.collection('donations').orderBy('date', 'desc').onSnapshot(snap => {
 			const data = snap.docs.map(doc => doc.data())
 			setDonationData(data)
 		  });
@@ -52,25 +53,35 @@ function DonationsPage() {
 			})
 			setDonationTypes(data)
 		});
+		const unsubscribeSources = db.collection('donation_sources').onSnapshot(snap => {
+			const data = snap.docs.map(doc => doc.data())
+			data.forEach( source => {
+				source.value = source.name
+				source.label = source.name
+			})
+			setSources(data)
+		});
 		
 		fetchPeople().catch(err => console.error(err));
 		fetchDonations();
 		return () => {
 			unsubscribe()
 			unsubscribeDT()
+			unsubscribeSources()
 		}
 
 	}, [])
 	
 	return (
 		<div>
-			<DonationEntry fetchDonations={fetchDonations} people={people} donationTypes={donationTypes}/>
+			<DonationEntry fetchDonations={fetchDonations} people={people} donationTypes={donationTypes} sources={sources}/>
 			<Table>
 				<thead>
 				<tr>
 					<th>Date</th>
 					<th>Name</th>
 					<th>Donation Type</th>
+					<th>Source</th>
 					<th>Amount</th>
 				</tr>
 				</thead>

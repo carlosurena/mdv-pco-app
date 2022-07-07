@@ -6,7 +6,7 @@ import Checkins from './components/checkins/Checkins'
 import Person from './components/people/Person'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import Dashboard from './components/dashboard/Dashboard'
-import {AppShell, Header} from '@mantine/core'
+import {AppShell} from '@mantine/core'
 import ExpensesPage from './components/money/ExpensesPage';
 import DonationsPage from './components/money/DonationsPage';
 
@@ -16,7 +16,6 @@ function App() {
 		<AppShell
 			padding="md"
 			navbar={<NavigationBar />}
-			header={<Header height={60} p="xs">header</Header>}
 			styles={(theme) => ({
 			main: { backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] },
 			})}

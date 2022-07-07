@@ -61,6 +61,7 @@ export const createExpense = (expense, user) => {
 		date: expense.date,
 			amount: expense.amount,
 			expense_type: expense.expense_type,
+			method: expense.method,
             createdBy: 'test',
             creatorName: 'test',
             createdOn: new Date(),
@@ -89,6 +90,22 @@ export const createExpenseType = (et, user) => {
 	});
 }
 
+export const createExpenseMethod = (em, user) => {
+	let db = firebase.firestore();
+	let expensesRef = db.collection('expense_methods');
+	expensesRef.add({
+		name: em,
+		createdBy: 'test',
+		creatorName: 'test',
+		createdOn: new Date(),
+		updatedOn: new Date()
+	}).then((expense) => {
+		console.log("success!",expense)
+	}).catch( (err) => {
+		console.log("failure!", err)
+	});
+}
+
 export const deleteExpense = async (id) => {
 	let db = firebase.firestore();
 	id && db.collection('expenses').doc(id).delete().then(() => {
@@ -105,6 +122,7 @@ export const updateExpense = async (id, data) => {
 			date: data.date,
 			amount: data.amount,
 			expense_type: data.expense_type,
+			method: data.method,
 			updatedBy: 'test',
             updatedOn: new Date()
 	}).then(() => {
@@ -226,7 +244,7 @@ export const getExpenseTotalsAggregateByDate = async (startDate = null, endDate 
 			}
 			res[formattedDate].amount += value.amount;
 			total += value.amount;
-			console.log(formattedDate, value, res, total)
+			// console.log(formattedDate, value, res, total)
 
 			return res;
 		}, {});

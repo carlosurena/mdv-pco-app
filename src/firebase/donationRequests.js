@@ -62,6 +62,7 @@ export const createDonation = (donation, user) => {
 			amount: donation.amount,
 			donor_name: donation.donor_name,
 			donation_type: donation.donation_type,
+			source: donation.source,
             creatorID: 'test',
             creatorName: 'test',
             createdOn: new Date(),
@@ -90,6 +91,22 @@ export const createDonationType = (dt, user) => {
 	});
 }
 
+export const createDonationSource = (ds, user) => {
+	let db = firebase.firestore();
+	let donationsRef = db.collection('donation_sources');
+	donationsRef.add({
+		name: ds,
+		createdBy: 'test',
+		creatorName: 'test',
+		createdOn: new Date(),
+		updatedOn: new Date()
+	}).then((donation) => {
+		console.log("success!",donation)
+	}).catch( (err) => {
+		console.log("failure!", err)
+	});
+}
+
 export const deleteDonation = async (id) => {
 	let db = firebase.firestore();
 	id && db.collection('donations').doc(id).delete().then(() => {
@@ -101,6 +118,7 @@ export const deleteDonation = async (id) => {
 
 export const updateDonation = async (id, data) => {
 	let db = firebase.firestore();
+	console.log('updating donation', id, data)
 	id && db.collection('donations').doc(id).set({
 			id: data.id,
 			date: data.date,
@@ -108,6 +126,7 @@ export const updateDonation = async (id, data) => {
 			amount: data.amount,
 			donor_name: data.donor_name,
 			donation_type: data.donation_type,
+			source: data.source,
 			updatedBy: 'test',
             updatedOn: new Date()
 	}).then(() => {
@@ -227,7 +246,7 @@ export const getDonationTotalsAggregateByDate = async (startDate = null, endDate
 			}
 			res[formattedDate].amount += value.amount;
 			total += value.amount;
-			console.log(formattedDate, value, res, total)
+			// console.log(formattedDate, value, res, total)
 
 			return res;
 		}, {});

@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react'
-import { Button } from '@mantine/core';
+import { Button, Indicator } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import MDVSelect from '../shared/MDVSelect';
 import MDVNumberInput from '../shared/MDVNumberInput';
-import { format } from 'date-fns'
+import { format, isToday } from 'date-fns'
 import { updateExpense } from '../../firebase/expenseRequests'
 
 
@@ -22,7 +22,12 @@ function ExpenseTableEditableRow(props) {
 
 	const updateExpenseType = (val) => {
 		console.log("updateExpenseType", val)
-		!!val && val.length > 0 ? updateExpenseData({'expense_type' : val[0]}) : updateExpenseData({'expense_type' : ''})
+		!!val && updateExpenseData({'expense_type' : val})
+	}
+
+	const updateExpenseMethod = (val) => {
+		console.log("updateExpenseMethod", val)
+		!!val && updateExpenseData({'method' : val})
 	}
 
 	const updateAmount = (value) => {
@@ -46,7 +51,6 @@ function ExpenseTableEditableRow(props) {
 		setExpenseData(props.expense)
 		props.expense.id && setId(props.expense.id)
 		updateDate(props.expense.date)
-		// initializeEditableFieldData();
 	}, [props.expense])
 
 	return (
@@ -58,6 +62,14 @@ function ExpenseTableEditableRow(props) {
 					required
 					inputFormat="MM/DD/YYYY"
 					labelFormat="MM/YYYY"	
+					renderDay={(date) => {
+						const day = date.getDate();
+						return (
+						  <Indicator size={6} color="red" offset={8} disabled={!isToday(date)}>
+							<div>{day}</div>
+						  </Indicator>
+						);
+					  }}
 					onChange={(query) => updateExpenseData({ 'date' : query})}
 					value={expenseData.date ? (expenseData.date instanceof Date ? expenseData.date : expenseData.date.toDate()) : ''}
 				/>
@@ -68,10 +80,20 @@ function ExpenseTableEditableRow(props) {
 						data={props.expenseTypes} 
 						label='Expense Type'
 						setValue={updateExpenseType}
-						value={expenseData.expense_type === '' ? [] :  [expenseData.expense_type]}
+						value={expenseData.expense_type}
 
 					/>
 			</td>) : (<td>{expenseData.expense_type}</td>)}
+			{ isEditing ? (
+			<td>
+				<MDVSelect 
+						data={props.methods} 
+						label='Method'
+						setValue={updateExpenseMethod}
+						value={expenseData.method}
+
+					/>
+			</td>) : (<td>{expenseData.method}</td>)}
 			{ isEditing ? (
 			<td>
 				<MDVNumberInput 

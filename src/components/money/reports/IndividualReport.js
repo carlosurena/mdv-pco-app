@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import { getDonationsByDateAndPerson, getDonationTotalsByPerson } from '../../../firebase/donationRequests'
 import ReportsTemplate from './ReportsTemplate';
-import { format } from 'date-fns'
-import { Modal, Button} from '@mantine/core'
+import { format, isToday } from 'date-fns'
+import { Modal, Button, Indicator} from '@mantine/core'
 import { DateRangePicker } from '@mantine/dates'
 import MDVSelect from '../../shared/MDVSelect';
 import { getAllPeopleReshaped } from '../../../pco/requests'
@@ -55,10 +55,18 @@ function IndividualReport() {
 				required
 				inputFormat="MM/DD/YYYY"
 				labelFormat="MM/YYYY"	
+				renderDay={(date) => {
+					const day = date.getDate();
+					return (
+					  <Indicator size={6} color="red" offset={8} disabled={!isToday(date)}>
+						<div>{day}</div>
+					  </Indicator>
+					);
+				  }}
 				onChange={(query) => setDates(query)}
 				value={dates}
 			/>
-			<Button onClick={() => generateReport()}>Generate Report</Button>
+			<Button disabled={!(id && dates && dates[0] !== null && dates[1] !== null)} onClick={() => generateReport()}>Generate Report</Button>
 			</Modal>
 		<ReportsTemplate 
 			title={title} 

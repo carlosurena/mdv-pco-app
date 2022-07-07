@@ -12,6 +12,7 @@ function ExpensesPage() {
 	const [expenseData, setExpenseData] = useState([]);
 	const [people, setPeople] = useState([]);
 	const [expenseTypes, setExpenseTypes] = useState([]);
+	const [methods, setMethods] = useState([]);
 
 
 	const fetchExpenses = async () => {
@@ -30,7 +31,7 @@ function ExpensesPage() {
 
 	const tableRows = expenseData.map((expense) => {
 	return (
-			<ExpenseTableEditableRow expense={expense} key={expense.id} deleteExpense={_deleteExpense} expenseTypes={expenseTypes} />
+			<ExpenseTableEditableRow expense={expense} key={expense.id} deleteExpense={_deleteExpense} expenseTypes={expenseTypes} methods={methods} />
 		)
 	});
 
@@ -40,7 +41,7 @@ function ExpensesPage() {
 		}
 			
 		
-		const unsubscribe = db.collection('expenses').onSnapshot(snap => {
+		const unsubscribe = db.collection('expenses').orderBy('date', 'desc').onSnapshot(snap => {
 			const data = snap.docs.map(doc => doc.data())
 			setExpenseData(data)
 		  });
@@ -52,6 +53,15 @@ function ExpensesPage() {
 			})
 			setExpenseTypes(data)
 		});
+
+		const unsubscribeEM = db.collection('expense_methods').onSnapshot(snap => {
+			const data = snap.docs.map(doc => doc.data())
+			data.forEach( em => {
+				em.value = em.name
+				em.label = em.name
+			})
+			setMethods(data)
+		});
 		
 		//getExpenseTypes().then(t => {setExpenseTypes(t)}).catch(err => console.error(err))
 		fetchPeople().catch(err => console.error(err));
@@ -59,18 +69,21 @@ function ExpensesPage() {
 		return () => {
 			unsubscribe()
 			unsubscribeET()
+			unsubscribeEM()
+
 		}
 
 	}, [])
 	
 	return (
 		<div>
-			<ExpenseEntry fetchExpenses={fetchExpenses} people={people} expenseTypes={expenseTypes}/>
+			<ExpenseEntry fetchExpenses={fetchExpenses} people={people} expenseTypes={expenseTypes} methods={methods}/>
 			<Table>
 				<thead>
 				<tr>
 					<th>Date</th>
 					<th>Expense</th>
+					<th>Method</th>
 					<th>Amount</th>
 				</tr>
 				</thead>

@@ -1,20 +1,13 @@
 	import React, {useState, useEffect} from 'react'
-	import { ActionIcon } from '@mantine/core';
+	import { ActionIcon, Indicator } from '@mantine/core';
 	import { DatePicker } from '@mantine/dates';
 	import MDVSelect from '../shared/MDVSelect';
 	import MDVNumberInput from '../shared/MDVNumberInput';
-	import { format } from 'date-fns'
+	import { format, isToday } from 'date-fns'
 	import { updateDonation } from '../../firebase/donationRequests'
 	import { Check, Edit, TrashX } from 'tabler-icons-react'
 
-	const donationTypes = [
-		{value: 'Diezmo', label: 'Diezmo'},
-		{value: 'Ofrenda', label: 'Ofrenda'},
-		{value: 'Casa Restauracion', label: 'Casa Restauracion'},
-		{value: 'Nuevo Templo', label: 'Nuevo Templo'},
-		{value: 'Niños', label: 'Niños'},
-		{value: 'Jovenes', label: 'Jovenes'}
-	]
+
 
 	function DonationTableEditableRow(props) {
 		const [donationData, setDonationData] = useState([]);
@@ -41,6 +34,11 @@
 		const updateDonationType = (val) => {
 			console.log("updateDonationType", val)
 			!!val && updateDonationData({'donation_type' : val})
+		}
+
+		const updateSource = (val) => {
+			console.log("updateSource", val)
+			!!val && updateDonationData({'source' : val})
 		}
 
 		const updateAmount = (value) => {
@@ -74,6 +72,14 @@
 						required
 						inputFormat="MM/DD/YYYY"
 						labelFormat="MM/YYYY"	
+						renderDay={(date) => {
+							const day = date.getDate();
+							return (
+							  <Indicator size={6} color="red" offset={8} disabled={!isToday(date)}>
+								<div>{day}</div>
+							  </Indicator>
+							);
+						  }}
 						onChange={(query) => updateDonationData({ 'date' : query})}
 						value={donationData.date ? (donationData.date instanceof Date ? donationData.date : donationData.date.toDate()) : ''}
 					/>
@@ -92,13 +98,23 @@
 				{ isEditing ? (
 				<td>
 					<MDVSelect 
-							data={donationTypes} 
+							data={props.donationTypes} 
 							label='Donation Type'
 							setValue={updateDonationType}
 							value={donationData.donation_type}
 
 						/>
 				</td>) : (<td>{donationData.donation_type}</td>)}
+				{ isEditing ? (
+				<td>
+					<MDVSelect 
+							data={props.sources} 
+							label='Source'
+							setValue={updateSource}
+							value={donationData.source}
+
+						/>
+				</td>) : (<td>{donationData.source}</td>)}
 				{ isEditing ? (
 				<td>
 					<MDVNumberInput 
@@ -115,6 +131,7 @@
 										donationData.donor_name && 
 										donationData.date && 
 										donationData.amount && 
+										donationData.source && 
 										donationData.donation_type)} 
 							onClick={() => saveEdit()}
 							variant="light"

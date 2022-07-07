@@ -1,14 +1,16 @@
 import React, {useState} from 'react'
-import { Grid, Button } from '@mantine/core'
+import { Grid, Button, Indicator } from '@mantine/core'
 import {DatePicker} from '@mantine/dates';
-import { createDonation, createDonationType } from '../../firebase/donationRequests';
+import { createDonation, createDonationSource, createDonationType } from '../../firebase/donationRequests';
 import MDVSelect from '../shared/MDVSelect';
 import MDVNumberInput from '../shared/MDVNumberInput';
+import { isToday } from 'date-fns'
 
 function DonationEntry(props) {
 	const [donor, setDonor] = useState('');
 	const [donorName, setDonorName] = useState('');
 	const [donationType, setDonationType] = useState('');
+	const [source, setSource] = useState('');
 	const [date, setDate] = useState('');
 	const [amount, setAmount] = useState('');
 
@@ -20,6 +22,7 @@ function DonationEntry(props) {
 		  donor_pco_id : donor,
 		  amount : amount,
 		  donation_type: donationType,
+		  source: source,
 		  donor_name: donorName,
 		  date: date
 	  }
@@ -32,12 +35,18 @@ function DonationEntry(props) {
 	  setDonor('');
 	  setDonorName('');
 	  setDonationType('');
+	  setSource('');
 	  setAmount(0);
 	};
 
 	const _createNewDonationType = (query) => {
 		console.log('creating new', query)
 		createDonationType(query);
+	}
+
+	const _createNewSource = (query) => {
+		console.log('creating new ', query)
+		createDonationSource(query)
 	}
 
 	const _createNewPerson = (query) => {
@@ -48,7 +57,7 @@ function DonationEntry(props) {
 	  <div>
 		  {props.people && 
 		  	<Grid align='flex-end'>
-				<Grid.Col span={3}>
+				<Grid.Col span={2}>
 					<DatePicker 
 						placeholder='Pick Date'
 						label="Date"
@@ -56,14 +65,21 @@ function DonationEntry(props) {
 						inputFormat="MM/DD/YYYY"
 						labelFormat="MM/YYYY"	
 						onChange={(query) => setDate(query)}
+						renderDay={(date) => {
+							const day = date.getDate();
+							return (
+							  <Indicator size={6} color="red" offset={8} disabled={!isToday(date)}>
+								<div>{day}</div>
+							  </Indicator>
+							);
+						  }}
 						value={date}
 					/>
 				</Grid.Col>
-				  <Grid.Col span={3}>
+				  <Grid.Col span={2}>
 					<MDVSelect 
 						data={props.people}
 						label={'Name'}
-						maxSelectedValues={1}
 						updateLabelName={setDonorName}
 						value={donor}
 						setValue={setDonor}
@@ -75,10 +91,18 @@ function DonationEntry(props) {
 					<MDVSelect 
 						data={props.donationTypes} 
 						label='Donation Type'
-						maxSelectedValues={1}
 						setValue={setDonationType}
 						value={donationType}
 						createNewOption={_createNewDonationType}
+					/>
+				</Grid.Col>
+				<Grid.Col span={2}>
+					<MDVSelect 
+						data={props.sources} 
+						label='Source'
+						setValue={setSource}
+						value={source}
+						createNewOption={_createNewSource}
 
 					/>
 				</Grid.Col>
@@ -91,7 +115,7 @@ function DonationEntry(props) {
 				</Grid.Col>
  				
 				<Grid.Col span={2}>
-					<Button onClick={transferValue} disabled={!(donor && donorName && date && amount && donationType)}>Submit</Button>
+					<Button onClick={transferValue} disabled={!(donor && donorName && date && amount && donationType && source)}>Submit</Button>
 				</Grid.Col>
 					
 			</Grid>
