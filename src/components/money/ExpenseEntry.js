@@ -43,7 +43,8 @@ function ExpenseEntry(props) {
 	
 	
 	return (
-	  <div>
+	  <section>
+		<h1>Expenses</h1>
 		  {props.people && 
 		  	<Grid align='flex-end'>
 				<Grid.Col span={2}>
@@ -100,7 +101,7 @@ function ExpenseEntry(props) {
 			</Grid>
 		}
 		 
-	  </div>
+	  </section>
 	);
   }
 	

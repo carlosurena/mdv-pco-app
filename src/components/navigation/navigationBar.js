@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { NavLink } from 'react-router-dom' 
-import {Navbar, UnstyledButton, Avatar, Text, Group} from '@mantine/core'
-import { Man, DiscountCheck, TrendingDown, TrendingUp, ReportAnalytics, Home} from 'tabler-icons-react'
+import {Navbar, UnstyledButton, Avatar, Text, Group, Box} from '@mantine/core'
+import { TrendingDown, TrendingUp, ReportAnalytics, ChevronRight} from 'tabler-icons-react'
 export class NavigationBar extends Component {
   render() {
     return (
-		<Navbar height={600} p="xs" width={{ base: 300 }}>
+		<Navbar height={600} p="xs" width={{ base: 250 }}>
 			<Navbar.Section>MDV</Navbar.Section>
 			<Navbar.Section grow mt="md">
-				<div className="nav-link">
+				{/* <div className="nav-link">
 					<NavLink to="/">
 						<UnstyledButton onClick={() => console.log('try focusing button with tab')}>
 							<Group>
@@ -43,7 +43,7 @@ export class NavigationBar extends Component {
 							</Group>
 						</UnstyledButton>
 					</NavLink>
-				</div>
+				</div> */}
 				<div className="nav-link">
 					<NavLink to="/donations">
 						<UnstyledButton onClick={() => console.log('try focusing button with tab')}>
@@ -82,7 +82,18 @@ export class NavigationBar extends Component {
 				</div>
 				
 			</Navbar.Section>
-			<Navbar.Section>{/* Footer with user */}</Navbar.Section>
+			<Navbar.Section>
+				<UnstyledButton className="user-btn" onClick={() => console.log('try focusing button with tab')}>
+					<Group className="user-btn-hover">
+						<Avatar radius="xl" color="blue" />
+						<Box style={{flex: 1}}>
+							<Text size="sm" weight={500}>First Last</Text>
+							<Text size="xs" color="dimmed">Email@email.com</Text>
+						</Box>
+						<ChevronRight />
+					</Group>
+				</UnstyledButton>
+			</Navbar.Section>
 		</Navbar>
     )
   }

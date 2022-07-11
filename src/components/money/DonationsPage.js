@@ -75,15 +75,16 @@ function DonationsPage() {
 	return (
 		<div>
 			<DonationEntry fetchDonations={fetchDonations} people={people} donationTypes={donationTypes} sources={sources}/>
-			<Table>
+			<Table highlightOnHover >
 				<thead>
-				<tr>
-					<th>Date</th>
-					<th>Name</th>
-					<th>Donation Type</th>
-					<th>Source</th>
-					<th>Amount</th>
-				</tr>
+					<tr>
+						<th>Date</th>
+						<th>Name</th>
+						<th>Donation Type</th>
+						<th>Source</th>
+						<th>Amount</th>
+						<th></th>
+					</tr>
 				</thead>
 				<tbody>{tableRows}</tbody>
 			</Table>

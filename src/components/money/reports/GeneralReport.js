@@ -1,11 +1,14 @@
 import React, {useState, useEffect} from 'react'
 import { getDonations, getDonationTotalsAggregate } from '../../../firebase/donationRequests'
 import ReportsTemplate from './ReportsTemplate';
-import { format, isToday } from 'date-fns'
-import { Modal, Button, SegmentedControl, Indicator } from '@mantine/core'
+import { isToday } from 'date-fns'
+import { Modal, Button, Switch, Indicator } from '@mantine/core'
 import { DateRangePicker } from '@mantine/dates'
+import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
+import { ReportsPDFTemplate } from './ReportsPDFTemplate'
 
-function GeneralReport() {
+	  
+function GeneralReport(props) {
 	const [donationData, setDonationData] = useState([]);
 	const [total, setTotal] = useState(0);
 	const [dates, setDates] = useState('')
@@ -17,7 +20,7 @@ function GeneralReport() {
 	}, [])
 	
 	const generateReport = () => {
-		setTitle('General Report from ' + format(dates[0], 'MM/dd/yyyy') +'to ' + format(dates[1], 'MM/dd/yyyy'))
+		setTitle('General Report')
 		if (isAggregate){
 			getDonationTotalsAggregate(dates[0], dates[1]).then( data => {
 				setDonationData(data.data)
@@ -33,46 +36,68 @@ function GeneralReport() {
 			})
 		}
 	}
+	const handleModalClose = () => {
+		setModalOpened(false)
+		props.setPage(props.home)
+	}
 	return (
 		<div>
 			<Modal 
 				opened={modalOpened}
-				onClose={ () => setModalOpened(false)}
-				title="data"
+				onClose={handleModalClose}
+				title="General Report"
 			>
-			<DateRangePicker 
-				placeholder='Pick Date'
-				label="Pick a Date Range"
-				required
-				inputFormat="MM/DD/YYYY"
-				labelFormat="MM/YYYY"	
-				renderDay={(date) => {
-					const day = date.getDate();
-					return (
-					  <Indicator size={6} color="red" offset={8} disabled={!isToday(date)}>
-						<div>{day}</div>
-					  </Indicator>
-					);
-				  }}
-				onChange={(query) => setDates(query)}
-				value={dates}
-			/>
-			<SegmentedControl 
-				value={isAggregate}
-				onChange={setIsAggregate}
-				data={[
-					{label:'All', value: false},
-					{label:'Aggregate', value: true},
-				]}
-			/>
+				<section>
+					<DateRangePicker 
+						placeholder='Pick Date'
+						label="Pick a Date Range"
+						required
+						inputFormat="MM/DD/YYYY"
+						labelFormat="MM/YYYY"	
+						renderDay={(date) => {
+							const day = date.getDate();
+							return (
+							<Indicator size={6} color="red" offset={8} disabled={!isToday(date)}>
+								<div>{day}</div>
+							</Indicator>
+							);
+						}}
+						onChange={(query) => setDates(query)}
+						value={dates}
+					/>
+				</section>
+				<section>
+					<Switch 
+						label='Aggregate Data'
+						checked={isAggregate}
+						onChange={(event) => setIsAggregate(event.currentTarget.checked)}
+					/>
+				</section>
 
 			<Button disabled={!(dates && dates[0] !== null && dates[1] !== null)} onClick={() => generateReport()}>Generate Report</Button>
 			</Modal>
-		<ReportsTemplate 
-			title={title} 
-			data={donationData}
-			total={total}
-			/>
+		
+
+		{donationData && donationData.length > 0 ? (
+			<div>
+				<ReportsTemplate 
+					title={title} 
+					data={donationData}
+					total={total}
+				/>
+				<PDFViewer className='pdf-viewer'>
+					<ReportsPDFTemplate title={title} dates={dates} data={donationData} total={total}/>
+				</PDFViewer>
+				<PDFDownloadLink document={<ReportsPDFTemplate title={title} dates={dates} data={donationData} total={total}/>} fileName="test">
+					{({loading}) => loading ? (<Button disabled>loading...</Button>) : (<Button>Download</Button>)}
+				</PDFDownloadLink>
+			</div>
+		) : (
+			<div>
+			</div>
+		)}
+		
+			
 		</div>
 	)
 

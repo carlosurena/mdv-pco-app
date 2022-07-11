@@ -85,6 +85,7 @@ function ExpensesPage() {
 					<th>Expense</th>
 					<th>Method</th>
 					<th>Amount</th>
+					<th></th>
 				</tr>
 				</thead>
 				<tbody>{tableRows}</tbody>

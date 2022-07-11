@@ -151,7 +151,8 @@
 							onClick={() => props.deleteDonation(id)}
 							variant="light"
 							color="red"
-						><TrashX /></ActionIcon></td>)}
+						><TrashX /></ActionIcon>
+					</td>)}
 
 				
 				

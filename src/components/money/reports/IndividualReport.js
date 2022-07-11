@@ -1,14 +1,15 @@
 import React, {useState, useEffect} from 'react'
-import { getDonationsByDateAndPerson, getDonationTotalsByPerson } from '../../../firebase/donationRequests'
+import { getDonationsByDateAndPerson } from '../../../firebase/donationRequests'
 import ReportsTemplate from './ReportsTemplate';
-import { format, isToday } from 'date-fns'
+import { isToday } from 'date-fns'
 import { Modal, Button, Indicator} from '@mantine/core'
 import { DateRangePicker } from '@mantine/dates'
 import MDVSelect from '../../shared/MDVSelect';
 import { getAllPeopleReshaped } from '../../../pco/requests'
+import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
+import { ReportsPDFTemplate } from './ReportsPDFTemplate'
 
-
-function IndividualReport() {
+function IndividualReport(props) {
 	const [donationData, setDonationData] = useState([]);
 	const [id, setId] = useState('')
 	const [donorName, setDonorName] = useState('')
@@ -26,53 +27,73 @@ function IndividualReport() {
 	}, [])
 	
 	const generateReport = async () => {
-		setTitle('Individual Report for ' + donorName + 'from ' + format(dates[0], 'MM/dd/yyyy') +'to ' + format(dates[1], 'MM/dd/yyyy'))
+		setTitle('Individual Report for ' + donorName)
 		getDonationsByDateAndPerson(id, dates[0] , dates[1]).then( data => {
-			setDonationData(data)
+			setDonationData(data.data)
+			setTotal(data.total)
 			setModalOpened(false)
-		})
-		setTotal(await getDonationTotalsByPerson(id[0], dates[0] , dates[1]))
+		});
 		console.log(total, 'total')
+	}
+
+	const handleModalClose = () => {
+		setModalOpened(false)
+		props.setPage(props.home)
 	}
 	return (
 		<div>
 			<Modal 
 				opened={modalOpened}
-				onClose={ () => setModalOpened(false)}
-				title="data"
+				onClose={handleModalClose}
+				title="Individual Report"
 			>
-			<MDVSelect 
-				data={people}
-				label={'Person Name'}
-				updateLabelName={setDonorName}
-				value={id}
-				setValue={setId}
-				labelLookupRequired={true}
-			/>
-			<DateRangePicker 
-				placeholder='Pick Date'
-				label="Pick a Date Range"
-				required
-				inputFormat="MM/DD/YYYY"
-				labelFormat="MM/YYYY"	
-				renderDay={(date) => {
-					const day = date.getDate();
-					return (
-					  <Indicator size={6} color="red" offset={8} disabled={!isToday(date)}>
-						<div>{day}</div>
-					  </Indicator>
-					);
-				  }}
-				onChange={(query) => setDates(query)}
-				value={dates}
-			/>
-			<Button disabled={!(id && dates && dates[0] !== null && dates[1] !== null)} onClick={() => generateReport()}>Generate Report</Button>
+				<section>
+					<MDVSelect 
+						data={people}
+						label={'Person Name'}
+						updateLabelName={setDonorName}
+						value={id}
+						setValue={setId}
+						labelLookupRequired={true}
+					/>
+					<DateRangePicker 
+						placeholder='Pick Date'
+						label="Pick a Date Range"
+						required
+						inputFormat="MM/DD/YYYY"
+						labelFormat="MM/YYYY"	
+						renderDay={(date) => {
+							const day = date.getDate();
+							return (
+							<Indicator size={6} color="red" offset={8} disabled={!isToday(date)}>
+								<div>{day}</div>
+							</Indicator>
+							);
+						}}
+						onChange={(query) => setDates(query)}
+						value={dates}
+					/>
+				</section>
+				<Button disabled={!(id && dates && dates[0] !== null && dates[1] !== null)} onClick={() => generateReport()}>Generate Report</Button>
 			</Modal>
-		<ReportsTemplate 
-			title={title} 
-			data={donationData}
-			total={total}
-			/>
+			{donationData && donationData.length > 0 ? (
+				<div>
+					<ReportsTemplate 
+						title={title} 
+						data={donationData}
+						total={total}
+					/>
+					<PDFViewer className='pdf-viewer'>
+						<ReportsPDFTemplate title={title} dates={dates} data={donationData} total={total}/>
+					</PDFViewer>
+					<PDFDownloadLink document={<ReportsPDFTemplate title={title} dates={dates} data={donationData} total={total}/>} fileName="test">
+						{({loading}) => loading ? (<Button disabled>loading...</Button>) : (<Button>Download</Button>)}
+					</PDFDownloadLink>
+				</div>
+				) : (
+					<div>
+					</div>
+				)}
 		</div>
 	)
 

@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react'
-import { Button, Indicator } from '@mantine/core';
+import React, {useState, useEffect} from 'react';
+import { ActionIcon, Indicator } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import MDVSelect from '../shared/MDVSelect';
 import MDVNumberInput from '../shared/MDVNumberInput';
 import { format, isToday } from 'date-fns'
 import { updateExpense } from '../../firebase/expenseRequests'
-
+import { Check, Edit, TrashX } from 'tabler-icons-react';
 
 function ExpenseTableEditableRow(props) {
 	const [expenseData, setExpenseData] = useState([]);
@@ -103,8 +103,33 @@ function ExpenseTableEditableRow(props) {
 				/>
 
 			</td>) : (<td>${expenseData.amount}</td>)}
-			{ isEditing ? (<td><Button disabled={!(expenseData.date && expenseData.amount && expenseData.expense_type)} onClick={() => saveEdit()}>Save</Button></td>) : (<td><Button onClick={() => setIsEditing(true)}>Edit</Button><Button color='red' onClick={() => props.deleteExpense(id)}>Delete</Button></td>)}
-
+			{ isEditing ? (
+					<td>
+						<ActionIcon 
+							disabled={!(expenseData.date && 
+										expenseData.expense_type && 
+										expenseData.method && 
+										expenseData.amount)} 
+							onClick={() => saveEdit()}
+							variant="light"
+							color="green"
+							>
+							<Check />
+						</ActionIcon></td>) : (
+					<td>
+						<ActionIcon 
+							onClick={() => setIsEditing(true)}
+							variant="light"
+							color="blue"
+							>
+							<Edit size={16} />
+						</ActionIcon>
+						<ActionIcon 
+							onClick={() => props.deleteExpense(id)}
+							variant="light"
+							color="red"
+						><TrashX /></ActionIcon>
+					</td>)}
 		</tr>
 	)
 

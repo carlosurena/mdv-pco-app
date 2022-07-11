@@ -1,6 +1,8 @@
 import React from 'react'
 import { format, toDate } from 'date-fns'
 import { Table } from '@mantine/core'
+import { CaretUp, CaretDown } from 'tabler-icons-react'
+
 
 function ReportsTemplate(props) {
 
@@ -19,34 +21,56 @@ function ReportsTemplate(props) {
 		</tr>
 	  ));
 
+	const totals = 
+		<tfoot>
+			<tr>
+				{props.data && props.data.length > 0 && props.data[0].date && <th></th>}
+				{props.data && props.data.length > 0 && props.data[0].dayOfWeek && <th></th>} 
+				{props.data && props.data.length > 0 && props.data[0].donor_name && <th></th>} 
+				{props.data && props.data.length > 0 && props.data[0].expense_type && <th></th>}
+				{props.data && props.data.length > 0 && props.data[0].donation_type && <th></th>}
+				<th>{props.isDistrictReport ? 'NET' : 'TOTAL'}: ${props.total} </th>
+				{ props.isDistrictReport && <th>${props.totalDonations} </th>}
+				{ props.isDistrictReport && <th>${props.totalExpenses} </th>}
+				{ props.isDistrictReport && <th>${(parseFloat(props.totalDonations)*.1).toFixed(2)} </th>}
+			</tr>
+		</tfoot>
+
+	let renderSorting = 
+	  	<span>
+			<CaretUp />
+			<CaretDown />
+	  	</span>
+	  
+
+
 	return (
 		<div>
-		{ props.data && props.data.length > 0 ? <div>
-			
+		{ props.data && props.data.length > 0 ? 
 			<div>
-				{props.title}
-			</div>
-			<Table>
-				<thead>
-					<tr>
-						{props.data[0].date && <th>Date</th>}
-						{props.data[0].dayOfWeek && <th>Day</th>} 
-						{props.data[0].donor_name && <th>Donor</th>} 
-						{props.data[0].expense_type && <th>Type</th>}
-						{props.data[0].donation_type && <th>Type</th>} 
-						{props.isDistrictReport ? <th>{'Income'}</th> : props.data[0].amount && <th>Amount</th>}
-						{props.isDistrictReport && <th>{'Expenses'}</th>}
-						{props.isDistrictReport && <th>{'Tithe'}</th>}
+				<div>
+					<h2>{props.title}</h2>
+				</div>
+				<Table>
+					<thead>
+						<tr>
+							{props.data[0].date && <th>Date {renderSorting}</th>}
+							{props.data[0].dayOfWeek && <th>Day {renderSorting}</th>} 
+							{props.data[0].donor_name && <th>Donor {renderSorting}</th>} 
+							{props.data[0].expense_type && <th>Type {renderSorting}</th>}
+							{props.data[0].donation_type && <th>Type {renderSorting}</th>} 
+							{props.isDistrictReport ? <th>Income {renderSorting}</th> : props.data[0].amount && <th>Amount {renderSorting}</th>}
+							{props.isDistrictReport && <th>Expenses {renderSorting}</th>}
+							{props.isDistrictReport && <th>Tithe {renderSorting}</th>}
+						</tr>
+					</thead>
+					<tbody>{rows}</tbody>
+					{totals}
+				</Table>
+				
+			
 
-
-					</tr>
-				</thead>
-				<tbody>{rows}</tbody>
-			</Table>
-			<div>{props.isDistrictReport ? 'NET INCOME' : 'TOTAL'}: ${props.total} </div>
-			{ props.isDistrictReport && <div>INCOME: ${props.totalDonations} </div>}
-			{ props.isDistrictReport && <div>EXPENSES: ${props.totalExpenses} </div>}
-		</div> : <div>No Data</div>}
+			</div> : <div>No Data</div>}
 		</div>
 	)
 

@@ -6,20 +6,21 @@ import Checkins from './components/checkins/Checkins'
 import Person from './components/people/Person'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import Dashboard from './components/dashboard/Dashboard'
-import {AppShell} from '@mantine/core'
+import {AppShell, MantineProvider} from '@mantine/core'
 import ExpensesPage from './components/money/ExpensesPage';
 import DonationsPage from './components/money/DonationsPage';
 
 function App() {
   return (
     <BrowserRouter>
-		<AppShell
-			padding="md"
-			navbar={<NavigationBar />}
-			styles={(theme) => ({
-			main: { backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] },
-			})}
-		>
+		<MantineProvider >
+			<AppShell
+				padding="md"
+				navbar={<NavigationBar />}
+				styles={(theme) => ({
+				main: { backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] },
+				})}
+			>
 				<Switch>
 					<Route exact path="/" component={Dashboard} />
 					<Route exact path="/checkins" component={Checkins} />
@@ -29,11 +30,10 @@ function App() {
 					<Route exact path="/reports" component={FinancialReportsPage} />
 					<Route path="/people/:person_id" component={Person} />
 				</Switch>
-		</AppShell>
-			{/* <NavigationBar /> */}
-			
-      
-    </BrowserRouter>
+			</AppShell>
+		</MantineProvider>			
+		
+		</BrowserRouter>
 
   );
 }

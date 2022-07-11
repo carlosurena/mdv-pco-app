@@ -139,26 +139,28 @@ export const updateDonation = async (id, data) => {
 export const getDonationsByDateAndPerson = async (id,startDate,endDate) => {
 	let db = firebase.firestore();
 	console.log('getting data for user', id, startDate, endDate );
+	let total = 0;
 	let donationsRef = db.collection('donations')
 		.where('donor_pco_id', '==', id)
 		.where('date', '>=', startDate)
 		.where('date','<=',endDate)
 		.orderBy('date', 'desc'); //.where('date', '>=', startDate).where(date, '<=', endDate)
-	let donations = donationsRef.get().then(donations => {
+	return donationsRef.get().then(donations => {
 		var data = donations.docs.map(doc => {
 			return {
 				...doc.data(),
 				id: doc.id
 			}
 		})
-		console.log(data)
-		return data
+		data.forEach( donation => {
+			total += donation.amount
+		})
+		return {total, data }
 	}).catch((err) => {
 		console.log("there's been an error getting donations", err)
 
 	}
 	)
-    return donations
 }
 
 export const getDonationTotalsByPerson = async (id, startDate = null, endDate = null) => {

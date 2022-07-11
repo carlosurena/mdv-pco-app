@@ -54,7 +54,8 @@ function DonationEntry(props) {
 	}
 	
 	return (
-	  <div>
+		<section>
+			<h1>Donations</h1>
 		  {props.people && 
 		  	<Grid align='flex-end'>
 				<Grid.Col span={2}>
@@ -121,7 +122,7 @@ function DonationEntry(props) {
 			</Grid>
 		}
 		 
-	  </div>
+	  </section>
 	);
   }
 	

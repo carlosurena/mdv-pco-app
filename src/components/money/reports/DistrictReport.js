@@ -5,7 +5,7 @@ import { Modal, Button, Indicator } from '@mantine/core'
 import { DateRangePicker } from '@mantine/dates'
 import { getDonationsAndExpenses } from '../../../firebase/compoundRequests';
 
-function DistrictReport() {
+function DistrictReport(props) {
 	const [aggregateData, setAggregateData] = useState([]);
 	const [totalDonations, setTotalDonations] = useState(0);
 	const [totalExpenses, setTotalExpenses] = useState(0);
@@ -47,53 +47,59 @@ function DistrictReport() {
 	// 	let newArr = [...donationData,...expenseData]
 	// 	console.log(newArr)
 	// }
+	const handleModalClose = () => {
+		setModalOpened(false)
+		props.setPage(props.home)
+	}
+
 	return (
 		<div>
 			<Modal 
 				opened={modalOpened}
-				onClose={ () => setModalOpened(false)}
-				title="data"
+				onClose={handleModalClose}
+				title="District Report"
 			>
-			<DateRangePicker 
-				placeholder='Pick Date'
-				label="Pick a Date Range"
-				required
-				inputFormat="MM/DD/YYYY"
-				labelFormat="MM/YYYY"	
-				renderDay={(date) => {
-					const day = date.getDate();
-					return (
-					  <Indicator size={6} color="red" offset={8} disabled={!isToday(date)}>
-						<div>{day}</div>
-					  </Indicator>
-					);
-				  }}
-				onChange={(query) => setDates(query)}
-				value={dates}
-			/>
-			{/* <SegmentedControl 
-				value={isAggregate}
-				onChange={setIsAggregate}
-				data={[
-					{label:'All', value: false},
-					{label:'Aggregate', value: true},
-				]}
-			/>
-			<SegmentedControl 
-				value={groupByWeek}
-				onChange={setGroupByWeek}
-				data={[
-					{label:'Day', value: false},
-					{label:'Week', value: true},
-				]}
-			/> */}
-			
+				<section>
+						<DateRangePicker 
+						placeholder='Pick Date'
+						label="Pick a Date Range"
+						required
+						inputFormat="MM/DD/YYYY"
+						labelFormat="MM/YYYY"	
+						renderDay={(date) => {
+							const day = date.getDate();
+							return (
+							<Indicator size={6} color="red" offset={8} disabled={!isToday(date)}>
+								<div>{day}</div>
+							</Indicator>
+							);
+						}}
+						onChange={(query) => setDates(query)}
+						value={dates}
+					/>
+					{/* <SegmentedControl 
+						value={isAggregate}
+						onChange={setIsAggregate}
+						data={[
+							{label:'All', value: false},
+							{label:'Aggregate', value: true},
+						]}
+					/>
+					<SegmentedControl 
+						value={groupByWeek}
+						onChange={setGroupByWeek}
+						data={[
+							{label:'Day', value: false},
+							{label:'Week', value: true},
+						]}
+					/> */}
+			</section>
+
 
 			<Button disabled={!(dates && dates[0] !== null && dates[1] !== null)} onClick={() => generateReport()}>Generate Report</Button>
 			</Modal>
-			<h1>{!!title && title}</h1>
 			<ReportsTemplate 
-				title={'Income'} 
+				title={title} 
 				data={aggregateData}
 				total={(parseFloat(totalDonations) - parseFloat(totalExpenses)).toFixed(2)}
 				totalDonations={totalDonations}
