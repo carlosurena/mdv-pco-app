@@ -2,6 +2,7 @@ import React from 'react'
 import { Card, Text, Group, useMantineTheme } from '@mantine/core';
 import { ChevronRight } from 'tabler-icons-react'
 
+
 function ReportListCard(props) {
 
 	const theme = useMantineTheme();
@@ -10,8 +11,9 @@ function ReportListCard(props) {
     ? theme.colors.dark[1]
     : theme.colors.gray[7];
 	  
+
 	return (
-		<Card className='report-list-card' shadow="sm" p="md" onClick={() => props.setPage(props.linkTo)}>
+		<Card className='report-list-card' shadow="sm" p="md" onClick={() => props.setActivePage(props.linkTo)}>
 			<Group position="apart" style={{ marginBottom: 5, marginTop: theme.spacing.sm }}>
 				<div>
 					<Text weight={500}>{props.linkTo.seoName}</Text>

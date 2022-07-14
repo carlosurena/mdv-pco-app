@@ -80,6 +80,10 @@ section {
 	height: 100%;
 }
 
+.navbar-logo {
+	max-width: 200px;
+}
+
 
 
 /************** PERSON *************************/

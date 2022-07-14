@@ -3,7 +3,7 @@ import 'firebase/firestore'
 import 'firebase/auth'
 // Initialize Firebase
 var config = {
-    apiKey: "AIzaSyBIlXA_W484Dolklt51bZK0ACPJsNTjbRU",
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: "mdv-administration.firebaseapp.com",
     databaseURL: "https://mdv-administration.firebaseio.com",
     projectId: "mdv-administration",

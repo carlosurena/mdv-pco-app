@@ -5,8 +5,10 @@ import { format, isToday } from 'date-fns'
 import { Modal, Switch, Button, Indicator } from '@mantine/core'
 import { DateRangePicker } from '@mantine/dates'
 import { getExpenses, getExpenseTotalsAggregate } from '../../../firebase/expenseRequests';
+import { useTranslation } from 'react-i18next';
 
 function IncomeExpenseReport(props) {
+	const { t } = useTranslation();
 	const [donationData, setDonationData] = useState([]);
 	const [expenseData, setExpenseData] = useState([]);
 	const [totalDonations, setTotalDonations] = useState(0);
@@ -21,7 +23,7 @@ function IncomeExpenseReport(props) {
 	}, [])
 	
 	const generateReport = () => {
-		setTitle('Income/Expense Report from ' + format(dates[0], 'MM/dd/yyyy') +'to ' + format(dates[1], 'MM/dd/yyyy'))
+		setTitle(t('income_expense_report_title_generated') + format(dates[0], 'MM/dd/yyyy') +'to ' + format(dates[1], 'MM/dd/yyyy'))
 		if (isAggregate){
 			getDonationTotalsAggregateByDate(dates[0], dates[1]).then( data => {
 				setDonationData(data.data)
@@ -47,19 +49,19 @@ function IncomeExpenseReport(props) {
 	}
 	const handleModalClose = () => {
 		setModalOpened(false)
-		props.setPage(props.home)
+		props.setPage(null)
 	}
 	return (
 		<div>
 			<Modal 
 				opened={modalOpened}
 				onClose={handleModalClose}
-				title="data"
+				title={t('income_expense_report_title')}
 			>
 				<section>
 					<DateRangePicker 
-						placeholder='Pick Date'
-						label="Pick a Date Range"
+						placeholder={t('pick_date')}
+						label={t('pick_date_range')}
 						required
 						inputFormat="MM/DD/YYYY"
 						labelFormat="MM/YYYY"	
@@ -77,22 +79,22 @@ function IncomeExpenseReport(props) {
 				</section>	
 				<section>
 					<Switch 
-						label='Aggregate Data'
+						label={t('aggregate_data')}
 						checked={isAggregate}
 						onChange={(event) => setIsAggregate(event.currentTarget.checked)}
 					/>
 				</section>
 
-			<Button disabled={!(dates && dates[0] !== null && dates[1] !== null)} onClick={() => generateReport()}>Generate Report</Button>
+			<Button disabled={!(dates && dates[0] !== null && dates[1] !== null)} onClick={() => generateReport()}>{t('generate_report')}</Button>
 			</Modal>
 			<h1>{!!title && title}</h1>
 			<ReportsTemplate 
-				title={'Income'} 
+				title={t('income')}
 				data={donationData}
 				total={totalDonations}
 			/>
 			<ReportsTemplate 
-				title={'Expenses'} 
+				title={t('expenses')}
 				data={expenseData}
 				total={totalExpenses}
 			/>

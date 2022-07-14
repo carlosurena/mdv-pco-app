@@ -5,10 +5,12 @@ import { Table } from '@mantine/core'
 import { getDonations, deleteDonation } from '../../firebase/donationRequests'
 import firebase from '../../firebase/firebase'
 import DonationTableEditableRow from './DonationTableEditableRow'
+import { useTranslation } from 'react-i18next'
 
 const db = firebase.firestore();
 
 function DonationsPage() {
+	const { t } = useTranslation();
 	const [donationData, setDonationData] = useState([]);
 	const [people, setPeople] = useState([]);
 	const [sources, setSources] = useState([]);
@@ -78,11 +80,11 @@ function DonationsPage() {
 			<Table highlightOnHover >
 				<thead>
 					<tr>
-						<th>Date</th>
-						<th>Name</th>
-						<th>Donation Type</th>
-						<th>Source</th>
-						<th>Amount</th>
+						<th>{t('date')}</th>
+						<th>{t('name')}</th>
+						<th>{t('donation_type')}</th>
+						<th>{t('source')}</th>
+						<th>{t('amount')}</th>
 						<th></th>
 					</tr>
 				</thead>

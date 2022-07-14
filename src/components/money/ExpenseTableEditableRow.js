@@ -6,8 +6,10 @@ import MDVNumberInput from '../shared/MDVNumberInput';
 import { format, isToday } from 'date-fns'
 import { updateExpense } from '../../firebase/expenseRequests'
 import { Check, Edit, TrashX } from 'tabler-icons-react';
+import { useTranslation } from 'react-i18next';
 
 function ExpenseTableEditableRow(props) {
+	const { t } = useTranslation();
 	const [expenseData, setExpenseData] = useState([]);
 	const [id,setId] = useState('');
 	const [isEditing, setIsEditing] = useState(false);
@@ -34,9 +36,6 @@ function ExpenseTableEditableRow(props) {
 		updateExpenseData({'amount' : value})
 	}
 
-	
-
-
 	const saveEdit = () => {
 		updateExpense(id,expenseData)
 		setIsEditing(false)
@@ -58,7 +57,7 @@ function ExpenseTableEditableRow(props) {
 			{ isEditing ? (
 			<td>
 				<DatePicker placeholder='Pick Date'
-					label="Date"
+					label={t('date')}
 					required
 					inputFormat="MM/DD/YYYY"
 					labelFormat="MM/YYYY"	
@@ -78,7 +77,7 @@ function ExpenseTableEditableRow(props) {
 			<td>
 				<MDVSelect 
 						data={props.expenseTypes} 
-						label='Expense Type'
+						label={t('expense_type')}
 						setValue={updateExpenseType}
 						value={expenseData.expense_type}
 
@@ -88,7 +87,7 @@ function ExpenseTableEditableRow(props) {
 			<td>
 				<MDVSelect 
 						data={props.methods} 
-						label='Method'
+						label={t('method')}
 						setValue={updateExpenseMethod}
 						value={expenseData.method}
 
@@ -97,7 +96,7 @@ function ExpenseTableEditableRow(props) {
 			{ isEditing ? (
 			<td>
 				<MDVNumberInput 
-					label="Amount"
+					label={t('amount')}
 					setAmount={updateAmount}
 					value={expenseData.amount}
 				/>

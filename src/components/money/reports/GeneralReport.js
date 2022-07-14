@@ -6,9 +6,11 @@ import { Modal, Button, Switch, Indicator } from '@mantine/core'
 import { DateRangePicker } from '@mantine/dates'
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import { ReportsPDFTemplate } from './ReportsPDFTemplate'
+import { useTranslation } from 'react-i18next';
 
 	  
 function GeneralReport(props) {
+	const { t } = useTranslation();
 	const [donationData, setDonationData] = useState([]);
 	const [total, setTotal] = useState(0);
 	const [dates, setDates] = useState('')
@@ -20,7 +22,7 @@ function GeneralReport(props) {
 	}, [])
 	
 	const generateReport = () => {
-		setTitle('General Report')
+		setTitle(t('general_report_title_generated'))
 		if (isAggregate){
 			getDonationTotalsAggregate(dates[0], dates[1]).then( data => {
 				setDonationData(data.data)
@@ -38,19 +40,19 @@ function GeneralReport(props) {
 	}
 	const handleModalClose = () => {
 		setModalOpened(false)
-		props.setPage(props.home)
+		props.setPage(null)
 	}
 	return (
 		<div>
 			<Modal 
 				opened={modalOpened}
 				onClose={handleModalClose}
-				title="General Report"
+				title={t('general_report_title')}
 			>
 				<section>
 					<DateRangePicker 
-						placeholder='Pick Date'
-						label="Pick a Date Range"
+						placeholder={t('pick_date')}
+						label={t('pick_date_range')}
 						required
 						inputFormat="MM/DD/YYYY"
 						labelFormat="MM/YYYY"	
@@ -68,13 +70,13 @@ function GeneralReport(props) {
 				</section>
 				<section>
 					<Switch 
-						label='Aggregate Data'
+						label={t('aggregate_data')}
 						checked={isAggregate}
 						onChange={(event) => setIsAggregate(event.currentTarget.checked)}
 					/>
 				</section>
 
-			<Button disabled={!(dates && dates[0] !== null && dates[1] !== null)} onClick={() => generateReport()}>Generate Report</Button>
+			<Button disabled={!(dates && dates[0] !== null && dates[1] !== null)} onClick={() => generateReport()}>{t('generate_report')}</Button>
 			</Modal>
 		
 
@@ -89,7 +91,7 @@ function GeneralReport(props) {
 					<ReportsPDFTemplate title={title} dates={dates} data={donationData} total={total}/>
 				</PDFViewer>
 				<PDFDownloadLink document={<ReportsPDFTemplate title={title} dates={dates} data={donationData} total={total}/>} fileName="test">
-					{({loading}) => loading ? (<Button disabled>loading...</Button>) : (<Button>Download</Button>)}
+					{({loading}) => loading ? (<Button disabled>{t('loading')}</Button>) : (<Button>{t('download')}</Button>)}
 				</PDFDownloadLink>
 			</div>
 		) : (

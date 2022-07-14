@@ -8,8 +8,10 @@ import MDVSelect from '../../shared/MDVSelect';
 import { getAllPeopleReshaped } from '../../../pco/requests'
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import { ReportsPDFTemplate } from './ReportsPDFTemplate'
+import { useTranslation } from 'react-i18next';
 
 function IndividualReport(props) {
+	const { t } = useTranslation();
 	const [donationData, setDonationData] = useState([]);
 	const [id, setId] = useState('')
 	const [donorName, setDonorName] = useState('')
@@ -27,7 +29,7 @@ function IndividualReport(props) {
 	}, [])
 	
 	const generateReport = async () => {
-		setTitle('Individual Report for ' + donorName)
+		setTitle(t('individual_report_title_generated') + donorName)
 		getDonationsByDateAndPerson(id, dates[0] , dates[1]).then( data => {
 			setDonationData(data.data)
 			setTotal(data.total)
@@ -38,27 +40,27 @@ function IndividualReport(props) {
 
 	const handleModalClose = () => {
 		setModalOpened(false)
-		props.setPage(props.home)
+		props.setPage(null)
 	}
 	return (
 		<div>
 			<Modal 
 				opened={modalOpened}
 				onClose={handleModalClose}
-				title="Individual Report"
+				title={t('individual_report_title')}
 			>
 				<section>
 					<MDVSelect 
 						data={people}
-						label={'Person Name'}
+						label={t('donor')}
 						updateLabelName={setDonorName}
 						value={id}
 						setValue={setId}
 						labelLookupRequired={true}
 					/>
 					<DateRangePicker 
-						placeholder='Pick Date'
-						label="Pick a Date Range"
+						placeholder={t('pick_date')}
+						label={t('pick_date_range')}
 						required
 						inputFormat="MM/DD/YYYY"
 						labelFormat="MM/YYYY"	
@@ -74,7 +76,7 @@ function IndividualReport(props) {
 						value={dates}
 					/>
 				</section>
-				<Button disabled={!(id && dates && dates[0] !== null && dates[1] !== null)} onClick={() => generateReport()}>Generate Report</Button>
+				<Button disabled={!(id && dates && dates[0] !== null && dates[1] !== null)} onClick={() => generateReport()}>{t('generate_report')}</Button>
 			</Modal>
 			{donationData && donationData.length > 0 ? (
 				<div>
@@ -86,8 +88,8 @@ function IndividualReport(props) {
 					<PDFViewer className='pdf-viewer'>
 						<ReportsPDFTemplate title={title} dates={dates} data={donationData} total={total}/>
 					</PDFViewer>
-					<PDFDownloadLink document={<ReportsPDFTemplate title={title} dates={dates} data={donationData} total={total}/>} fileName="test">
-						{({loading}) => loading ? (<Button disabled>loading...</Button>) : (<Button>Download</Button>)}
+					<PDFDownloadLink document={<ReportsPDFTemplate title={title} dates={dates} data={donationData} total={total}/>} fileName="report">
+						{({loading}) => loading ? (<Button disabled>{t('loading')}</Button>) : (<Button>{t('download')}</Button>)}
 					</PDFDownloadLink>
 				</div>
 				) : (

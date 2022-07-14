@@ -4,9 +4,11 @@ import {DatePicker} from '@mantine/dates';
 import { createDonation, createDonationSource, createDonationType } from '../../firebase/donationRequests';
 import MDVSelect from '../shared/MDVSelect';
 import MDVNumberInput from '../shared/MDVNumberInput';
-import { isToday } from 'date-fns'
+import { isToday } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 function DonationEntry(props) {
+	const { t } = useTranslation();
 	const [donor, setDonor] = useState('');
 	const [donorName, setDonorName] = useState('');
 	const [donationType, setDonationType] = useState('');
@@ -55,13 +57,13 @@ function DonationEntry(props) {
 	
 	return (
 		<section>
-			<h1>Donations</h1>
+			<h1>{t('donations')}</h1>
 		  {props.people && 
 		  	<Grid align='flex-end'>
 				<Grid.Col span={2}>
 					<DatePicker 
 						placeholder='Pick Date'
-						label="Date"
+						label={t('date')}
 						required
 						inputFormat="MM/DD/YYYY"
 						labelFormat="MM/YYYY"	
@@ -80,7 +82,7 @@ function DonationEntry(props) {
 				  <Grid.Col span={2}>
 					<MDVSelect 
 						data={props.people}
-						label={'Name'}
+						label={t('name')}
 						updateLabelName={setDonorName}
 						value={donor}
 						setValue={setDonor}
@@ -91,7 +93,7 @@ function DonationEntry(props) {
 				<Grid.Col span={2}>
 					<MDVSelect 
 						data={props.donationTypes} 
-						label='Donation Type'
+						label={t('donation_type')}
 						setValue={setDonationType}
 						value={donationType}
 						createNewOption={_createNewDonationType}
@@ -100,7 +102,7 @@ function DonationEntry(props) {
 				<Grid.Col span={2}>
 					<MDVSelect 
 						data={props.sources} 
-						label='Source'
+						label={t('source')}
 						setValue={setSource}
 						value={source}
 						createNewOption={_createNewSource}
@@ -109,14 +111,14 @@ function DonationEntry(props) {
 				</Grid.Col>
 				<Grid.Col span={2}>
 					<MDVNumberInput 
-						label="Amount"
+						label={t('amount')}
 						setAmount={setAmount}
 						value={amount}
 					/>
 				</Grid.Col>
  				
 				<Grid.Col span={2}>
-					<Button onClick={transferValue} disabled={!(donor && donorName && date && amount && donationType && source)}>Submit</Button>
+					<Button onClick={transferValue} disabled={!(donor && donorName && date && amount && donationType && source)}>{t('submit')}</Button>
 				</Grid.Col>
 					
 			</Grid>

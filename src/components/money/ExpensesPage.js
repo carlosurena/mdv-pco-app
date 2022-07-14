@@ -5,10 +5,11 @@ import { Table } from '@mantine/core'
 import { getExpenses, deleteExpense } from '../../firebase/expenseRequests'
 import firebase from '../../firebase/firebase'
 import ExpenseTableEditableRow from './ExpenseTableEditableRow'
-
+import { useTranslation } from 'react-i18next'
 const db = firebase.firestore();
 
 function ExpensesPage() {
+	const { t } = useTranslation(); 
 	const [expenseData, setExpenseData] = useState([]);
 	const [people, setPeople] = useState([]);
 	const [expenseTypes, setExpenseTypes] = useState([]);
@@ -81,10 +82,10 @@ function ExpensesPage() {
 			<Table>
 				<thead>
 				<tr>
-					<th>Date</th>
-					<th>Expense</th>
-					<th>Method</th>
-					<th>Amount</th>
+					<th>{t('date')}</th>
+					<th>{t('expense')}</th>
+					<th>{t('method')}</th>
+					<th>{t('amount')}</th>
 					<th></th>
 				</tr>
 				</thead>

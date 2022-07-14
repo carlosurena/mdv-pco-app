@@ -5,7 +5,10 @@ import { createExpense, createExpenseMethod, createExpenseType } from '../../fir
 import MDVSelect from '../shared/MDVSelect';
 import MDVNumberInput from '../shared/MDVNumberInput';
 import { isToday } from 'date-fns'
+import { useTranslation } from 'react-i18next';
+
 function ExpenseEntry(props) {
+	const { t } = useTranslation();
 	const [expenseType, setExpenseType] = useState('');
 	const [method, setMethod] = useState('');
 	const [date, setDate] = useState('');
@@ -44,13 +47,13 @@ function ExpenseEntry(props) {
 	
 	return (
 	  <section>
-		<h1>Expenses</h1>
+		<h1>{t('expenses')}</h1>
 		  {props.people && 
 		  	<Grid align='flex-end'>
 				<Grid.Col span={2}>
 					<DatePicker 
 						placeholder='Pick Date'
-						label="Date"
+						label={t('date')}
 						required
 						inputFormat="MM/DD/YYYY"
 						labelFormat="MM/YYYY"	
@@ -69,7 +72,7 @@ function ExpenseEntry(props) {
 				<Grid.Col span={3}>
 					<MDVSelect 
 						data={props.expenseTypes} 
-						label='Expense Type'
+						label={t('expense_type')}
 						setValue={setExpenseType}
 						value={expenseType}
 						createNewOption={_createNewExpenseType}
@@ -79,7 +82,7 @@ function ExpenseEntry(props) {
 				<Grid.Col span={2}>
 					<MDVSelect 
 						data={props.methods} 
-						label='Method'
+						label={t('method')}
 						setValue={setMethod}
 						value={method}
 						createNewOption={_createNewExpenseMethod}
@@ -88,14 +91,14 @@ function ExpenseEntry(props) {
 				</Grid.Col>
 				<Grid.Col span={3}>
 					<MDVNumberInput 
-						label="Amount"
+						label={t('amount')}
 						setAmount={setAmount}
 						value={amount}
 					/>
 				</Grid.Col>
  				
 				<Grid.Col span={2}>
-					<Button onClick={transferValue} disabled={!(date && amount && method && expenseType)}>Submit</Button>
+					<Button onClick={transferValue} disabled={!(date && amount && method && expenseType)}>{t('submit')}</Button>
 				</Grid.Col>
 					
 			</Grid>

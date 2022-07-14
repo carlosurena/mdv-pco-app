@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import './utils/i18n/config'
 // import { Provider } from 'react-redux'
 
 const rootElement = document.getElementById('root');
