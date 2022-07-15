@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { NavLink } from 'react-router-dom' 
 import {Navbar, UnstyledButton, Avatar, Text, Group, Box, Image, Popover, Button, Select } from '@mantine/core'
-import { TrendingDown, TrendingUp, ReportAnalytics, ChevronRight} from 'tabler-icons-react'
+import { TrendingDown, TrendingUp, ReportAnalytics, ChevronRight, ExternalLink} from 'tabler-icons-react'
 import logo from '../../assets/img/logo.png';
 import { useTranslation } from 'react-i18next';
 import { setCookie, getCookie, checkCookie } from '../../utils/cookieUtils'
@@ -96,6 +96,18 @@ function NavigationBar(props) {
 							</Group>
 						</UnstyledButton>
 					</NavLink>
+				</div>
+				<div className="nav-link">
+					<a href="https://people.planningcenteronline.com/people" target="_blank" rel="noreferrer noopener" >
+						<UnstyledButton >
+							<Group>
+								<Avatar size={30} color="blue"><ExternalLink size={20}/></Avatar>
+								<div>
+									<Text color="blue">{t('planning_center')}</Text>
+								</div>
+							</Group>
+						</UnstyledButton>
+					</a>
 				</div>
 				
 			</Navbar.Section>

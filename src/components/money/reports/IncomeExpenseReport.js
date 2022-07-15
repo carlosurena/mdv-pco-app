@@ -23,7 +23,7 @@ function IncomeExpenseReport(props) {
 	}, [])
 	
 	const generateReport = () => {
-		setTitle(t('income_expense_report_title_generated') + format(dates[0], 'MM/dd/yyyy') +'to ' + format(dates[1], 'MM/dd/yyyy'))
+		setTitle(t('income_expense_report_title_generated') + format(dates[0], 'MM/dd/yyyy') +' - ' + format(dates[1], 'MM/dd/yyyy'))
 		if (isAggregate){
 			getDonationTotalsAggregateByDate(dates[0], dates[1]).then( data => {
 				setDonationData(data.data)

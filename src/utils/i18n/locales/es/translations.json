@@ -35,5 +35,8 @@
 	"download" : "Descarga",
 	"loading": "Cargando..",
 	"signout": "Cerrar Sesión",
-	"language": "Idioma"
+	"language": "Idioma",
+	"planning_center": "Planning Center",
+	"create_pco": "Crear {{query}} en Planning Center",
+	"create" : "Crear {{query}}"
 }

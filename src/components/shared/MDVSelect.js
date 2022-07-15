@@ -1,9 +1,10 @@
 import React from 'react';
 import { Select } from '@mantine/core';
 import { getPersonByID } from '../../pco/requests';
+import { useTranslation } from 'react-i18next';
 
 function MDVSelect(props) {
- 
+	const { t } = useTranslation();
 
 	const changeValue = (val) => {
 
@@ -28,7 +29,7 @@ function MDVSelect(props) {
 			label={props.label}
 			searchable
 			creatable
-			getCreateLabel={(query) => `+ Create ${query}`}
+			getCreateLabel={(query) => props.labelLookupRequired ? t('create_pco', {query}) : t('create', {query})}
 			onCreate={(query) => props.createNewOption(query)}
 			onChange={(query) => changeValue(query)}
 			value={props.value}

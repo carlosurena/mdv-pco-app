@@ -2,10 +2,9 @@ import React, { Component } from 'react'
 import DemographicsWidget from './DemographicsWidget'
 import MembershipWidget from './MembershipWidget'
 import UpcomingBirthdaysWidget from './UpcomingBirthdaysWidget'
-import Vault from '../vault/vault'
 import axios from 'axios'
+import { getCookie } from '../../utils/cookieUtils'
 
-const vault = new Vault();
 
 export class Dashboard extends Component {
 
@@ -23,13 +22,14 @@ export class Dashboard extends Component {
 
     //fetches user-made upcoming birthday list (next 6 months) from PCO's List api
     getUpcomingBirthdays = () => {
+		let jwt = getCookie("jwt");
+
         //Birthday List
         this.setState({ isFetchingBD: true })
         axios.get("https://api.planningcenteronline.com/people/v2/lists/909452/people", {
-            auth: {
-                username: vault.username,
-                password: vault.password
-            }
+            headers: {
+				"Authorization": `Bearer ${jwt}`
+			}
         })
             .then(res => {
                 const birthdays = res.data.data;
@@ -46,12 +46,12 @@ export class Dashboard extends Component {
     }
     //fetches predefined PCO stats
     getStats = () => {
+		let jwt = getCookie("jwt");
         this.setState({ isFetching: true })
         axios.get("https://api.planningcenteronline.com/people/v2/stats", {
-            auth: {
-                username: vault.username,
-                password: vault.password
-            }
+            headers: {
+				"Authorization": `Bearer ${jwt}`
+			}
         })
             .then(res => {
                 const stats = res.data.data;

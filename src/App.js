@@ -45,7 +45,9 @@ function App() {
 			}
 
 			<Switch>
-				<Route exact path="/logout" component={LogOutPage} />
+				<Route exact path="/logout" >
+					<LogOutPage auth={auth}/>
+				</Route>
 			</Switch>
 			</MantineProvider>	
 		
@@ -73,51 +75,60 @@ function ProvideAuth({ children }) {
   function useProvideAuth() {
 	const [user, setUser] = useState(null);
 	const [isAdmin, setIsAdmin] = useState(false);
-	
+	const [loggedIn, setLoggedIn] = useState(false)
 	useEffect(() => {
-		if(checkCookie("jwt")){
-			console.log('jwt token exists')
-			getCurrentUserData().then( data =>{
-				if(data) {
-					//successful login
-					setUser(data)
-					if (data.data.attributes.site_administrator){
-						setIsAdmin(true)
-					}
-				} else{
-					//unsuccessful login.. could be expired token or ___
-					signout()
-				}
-			})
-		}else {
-			console.log('jwt cookie doesnt exist, using url code to ping pco')
-			const params = new URLSearchParams(window.location.search);
-			const code = params.get("code")
-			if(code){
-				console.log('code used: ', code)
-				getAuthToken(code).then( token => {
-					console.log(token)
-					getCurrentUserData().then( data =>{
-						if (data){
-							console.log('we have user data', data)
-							setUser(data)
-							if (data.data.attributes.site_administrator){
-								setIsAdmin(true)
-							}
-						}else{
-							console.log('code but no data(wrong code used), attempting step 1')
-							signin()
-						}
-						
-					})
-				}).catch( error => {
-					console.log("error retrieving access token. Code is", error)
-				})
+		if(window.location.pathname === '/logout'){
+			if(checkCookie("jwt")){
+				window.location.href = "/"
 			} else {
-				console.log('code doesnt exist, starting from step 1, redirecting to oauth.')
-				signin()
+				console.log("user logged out, " , user, isAdmin)
+			}
+		} else {
+			if(checkCookie("jwt")){
+				console.log('jwt token exists')
+				getCurrentUserData().then( data =>{
+					if(data) {
+						//successful login
+						setUser(data)
+						if (data.data.attributes.site_administrator){
+							setIsAdmin(true)
+						}
+					} else{
+						//unsuccessful login.. could be expired token or ___
+						signout()
+					}
+				})
+			}else {
+				console.log('jwt cookie doesnt exist, using url code to ping pco')
+				const params = new URLSearchParams(window.location.search);
+				const code = params.get("code")
+				if(code){
+					console.log('code used: ', code)
+					getAuthToken(code).then( token => {
+						console.log(token)
+						getCurrentUserData().then( data =>{
+							if (data){
+								console.log('we have user data', data)
+								setUser(data)
+								if (data.data.attributes.site_administrator){
+									setIsAdmin(true)
+								}
+							}else{
+								console.log('code but no data(wrong code used), attempting step 1')
+								signin()
+							}
+							
+						})
+					}).catch( error => {
+						console.log("error retrieving access token. Code is", error)
+					})
+				} else {
+					console.log('code doesnt exist, starting from step 1, redirecting to oauth.')
+					signin()
+				}
 			}
 		}
+		
 		
 	}, [])
 
@@ -131,7 +142,7 @@ function ProvideAuth({ children }) {
 		setUser(null)
 		deleteCookie('jwt')
 		console.log('reloading pg')
-		window.location.reload()
+		window.location.href = "/logout"
 
 	};
   

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios'
-import Vault from '../vault/vault'
 import PeopleList from './PeopleList'
 import AutocompleteSearch from '../AutocompleteSearch'
+import { getCookie } from '../../utils/cookieUtils';
 
-const vault = new Vault();
 
 export class People extends Component {
 
@@ -15,11 +14,11 @@ export class People extends Component {
         list: undefined
     }
     componentDidMount() {
+		let jwt = getCookie('jwt')
         axios.get("https://api.planningcenteronline.com/people/v2/people?per_page=1000", {
-            auth: {
-                username: vault.username,
-                password: vault.password
-            }
+            headers: {
+				"Authorization": `Bearer ${jwt}`
+			}
         })
             .then(res => {
                 const people = res.data;

@@ -1,14 +1,12 @@
 import axios from 'axios';
-import Vault from '../components/vault/vault'
 import { setCookie, checkCookie, getCookie } from '../utils/cookieUtils';
-const vault = new Vault();
 
 
-export const getAllPeople = async () =>  {
+export const getAllPeople = async (user) =>  {
+	let jwt = getCookie("jwt");
 	axios.get("https://api.planningcenteronline.com/people/v2/people?per_page=1000", {
-		auth: {
-			username: vault.username,
-			password: vault.password
+		headers: {
+			"Authorization": `Bearer ${jwt}`
 		}
 	})
 		.then(res => {
@@ -22,12 +20,11 @@ export const getAllPeople = async () =>  {
 }
 
 export const getAllPeopleReshaped = async () => {
-
+	let jwt = getCookie("jwt");
 	let response;
 	response = await axios.get("https://api.planningcenteronline.com/people/v2/people?per_page=1000", {
-		auth: {
-			username: vault.username,
-			password: vault.password
+		headers: {
+			"Authorization": `Bearer ${jwt}`
 		}
 	})
 		.then(res => {
@@ -54,11 +51,11 @@ export const getAllPeopleReshaped = async () => {
 }
 
 export const getPersonByID = async (id) => {
+	let jwt = getCookie("jwt");
 	let person = axios.get("https://api.planningcenteronline.com/people/v2/people/"+ id , {
-            auth: {
-                username: vault.username,
-                password: vault.password
-            }
+		headers: {
+			"Authorization": `Bearer ${jwt}`
+		}
         })
             .then(res => {
                 const person = res.data.data;
@@ -67,7 +64,7 @@ export const getPersonByID = async (id) => {
 				return person
             }).catch(err => {
                 console.log(err)
-                alert("We've encountered an error. Please check your internet connection and try again later.")
+                // alert("We've encountered an error. Please check your internet connection and try again later.")
             }
             );
 		return person;
