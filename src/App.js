@@ -75,7 +75,6 @@ function ProvideAuth({ children }) {
   function useProvideAuth() {
 	const [user, setUser] = useState(null);
 	const [isAdmin, setIsAdmin] = useState(false);
-	const [loggedIn, setLoggedIn] = useState(false)
 	useEffect(() => {
 		if(window.location.pathname === '/logout'){
 			if(checkCookie("jwt")){
@@ -129,7 +128,7 @@ function ProvideAuth({ children }) {
 			}
 		}
 		
-		
+	//eslint-disable-next-line
 	}, [])
 
 	const signin = () => {
