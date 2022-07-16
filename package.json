@@ -21,7 +21,6 @@
     "express": "^4.18.1",
     "firebase": "^6.6.2",
     "i18next": "^21.8.13",
-    "netlify-cli": "^10.10.0",
     "nodemon": "^2.0.19",
     "react": "^16.12.0",
     "react-c3js": "^0.1.20",
