@@ -30,7 +30,20 @@ const styles = StyleSheet.create({
 	},
 	section: {
 	  width: '100%',
-	  marginBottom: '15px'
+	  marginBottom: '15px',
+	  display: 'flex'
+	},
+	signSection: {
+		width: '100%',
+		flexDirection: 'row',
+		marginTop: '25px'
+	},
+	signature: {
+		width: '50%'
+	},
+	signName: {
+		width: '100%',
+		textAlign: 'center'
 	}
   });
 
@@ -51,32 +64,43 @@ const styles = StyleSheet.create({
 			</View>
 			<Table data={props.data}>
                     <TableHeader textAlign={"center"}>
-                        {props.data.length > 0 && props.data[0].date && <TableCell weighting={0.4}>{t('date')}</TableCell>}
-						{props.data.length > 0 && props.data[0].dayOfWeek && <TableCell weighting={0.4}>{t('day')}</TableCell>}
+                        {props.data.length > 0 && props.data[0].date && <TableCell weighting={0.45} >{t('date')}</TableCell>}
+						{props.data.length > 0 && props.data[0].dayOfWeek && <TableCell >{t('day')}</TableCell>}
                         {props.data.length > 0 && props.data[0].donor_name && <TableCell >{t('donor')}</TableCell>}
                         {props.data.length > 0 && props.data[0].donation_type && <TableCell>{t('type')}</TableCell>}
-						{props.data.length > 0 && props.data[0].expense_type && <TableCell weighting={0.4}>{t('type')}</TableCell>}
-						{props.isDistrictReport ? <TableCell weighting={0.3} >{t('income')}</TableCell> : props.data[0].amount && <TableCell weighting={0.3} >{t('amount')}</TableCell>}
-						{props.isDistrictReport && <TableCell weighting={0.3} >{t('expenses')}</TableCell>}
-						{props.isDistrictReport && <TableCell weighting={0.3} >{t('tithes')}</TableCell>}
+						{props.data.length > 0 && props.data[0].expense_type && <TableCell >{t('type')}</TableCell>}
+						{props.isDistrictReport ? <TableCell>{t('income')}</TableCell> : props.data[0].amount && <TableCell >{t('amount')}</TableCell>}
+						{props.isDistrictReport && <TableCell>{t('expenses')}</TableCell>}
+						{props.isDistrictReport && <TableCell>{t('tithes')}</TableCell>}
 					</TableHeader>
-                    <TableBody>
-						{props.isDistrictReport ? <DataTableCell weighting={0.4} getContent={(r) => format(r.date, 'MM/dd/yyyy')}/>: props.data[0].date && <DataTableCell weighting={0.4} getContent={(r) => format(r.date.toDate(), 'MM/dd/yyyy')}/>}
-						{props.data.length > 0 && props.data[0].dayOfWeek && <DataTableCell weighting={0.4} getContent={(r) => r.dayOfWeek}/>}
+                    <TableBody textAlign={"center"}>
+						{props.isDistrictReport ? <DataTableCell weighting={0.45} getContent={(r) => format(r.date, 'MM/dd/yyyy')}/>: props.data[0].date && <DataTableCell weighting={0.45} getContent={(r) => format(r.date.toDate(), 'MM/dd/yyyy')}/>}
+						{props.data.length > 0 && props.data[0].dayOfWeek && <DataTableCell getContent={(r) => r.dayOfWeek}/>}
 						{props.data.length > 0 && props.data[0].donor_name && <DataTableCell getContent={(r) => r.donor_name}/>}
 						{props.data.length > 0 && props.data[0].donation_type && <DataTableCell getContent={(r) => r.donation_type}/>}
 						{props.data.length > 0 && props.data[0].expense_type && <DataTableCell getContent={(r) => r.expense_type}/>}
-						{props.data[0].amount && <DataTableCell weighting={0.3} getContent={(r) => r.amount ? `$${r.amount}` : '$0'}/>}
-						{props.isDistrictReport && (props.data[0].income ? <DataTableCell weighting={0.3} getContent={(r) => r.income ? `$${r.income}` : '$0'}/> : <DataTableCell getContent={() => '$0'}/>)}
-						{props.isDistrictReport && (props.data[0].expenses ? <DataTableCell weighting={0.3} getContent={(r) => r.expenses ? `$${r.expenses}` : '$0'}/> : <DataTableCell getContent={() => '$0'}/>)}
-						{props.isDistrictReport && (props.data[0].income ? <DataTableCell weighting={0.3} getContent={(r) => r.income ? `$${(parseFloat(r.income)*.1).toFixed(2)}` : '$0'}/> : <DataTableCell getContent={() => '$0'}/>)}
+						{props.data[0].amount && <DataTableCell getContent={(r) => r.amount ? parseFloat(r.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD'}) : '$0.00'}/>}
+						{props.isDistrictReport && (props.data[0].income ? <DataTableCell getContent={(r) => r.income ? parseFloat(r.income).toLocaleString('en-US', { style: 'currency', currency: 'USD'}) : '$0.00'}/> : <DataTableCell getContent={() => '$0.00'}/>)}
+						{props.isDistrictReport && (props.data[0].expenses ? <DataTableCell getContent={(r) => r.expenses ? parseFloat(r.expenses).toLocaleString('en-US', { style: 'currency', currency: 'USD'}) : '$0.00'}/> : <DataTableCell getContent={() => '$0.00'}/>)}
+						{props.isDistrictReport && (props.data[0].income ? <DataTableCell getContent={(r) => r.income ? parseFloat(r.income).toLocaleString('en-US', { style: 'currency', currency: 'USD'}) : '$0.00'}/> : <DataTableCell getContent={() => '$0.00'}/>)}
                     </TableBody>
                 </Table>
 			<View>
-				<Text>Total: ${props.total}</Text>
-				{ props.isDistrictReport && <Text>Total ({t('income')}): ${props.totalDonations} </Text>}
-				{ props.isDistrictReport && <Text>Total ({t('expenses')}): ${props.totalExpenses} </Text>}
-				{ props.isDistrictReport && <Text>Total ({t('tithes')}): ${(parseFloat(props.totalDonations)*.1).toFixed(2)} </Text>}
+				<Text>Total: {parseFloat(props.total).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</Text>
+				{ props.isDistrictReport && <Text>Total ({t('income')}): {parseFloat(props.totalDonations).toLocaleString('en-US', { style: 'currency', currency: 'USD'})} </Text>}
+				{ props.isDistrictReport && <Text>Total ({t('expenses')}): {parseFloat(props.totalExpenses).toLocaleString('en-US', { style: 'currency', currency: 'USD'})} </Text>}
+				{ props.isDistrictReport && <Text>Total ({t('tithes')}): {(parseFloat(props.totalDonations) * .1).toLocaleString('en-US', { style: 'currency', currency: 'USD'})} </Text>}
+			</View>
+
+			<View style={styles.signSection}>
+				<View style={styles.signature}>
+					<Text style={styles.signName}>__________________</Text>
+					<Text style={styles.signName}>Pastor</Text>
+				</View>
+				<View style={styles.signature}>
+					<Text style={styles.signName}>__________________</Text>
+					<Text style={styles.signName}>{t('secretary')}</Text>
+				</View>
 			</View>
 		  </Page>
 		</Document>

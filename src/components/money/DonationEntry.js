@@ -6,6 +6,8 @@ import MDVSelect from '../shared/MDVSelect';
 import MDVNumberInput from '../shared/MDVNumberInput';
 import { isToday } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { getCookie } from '../../utils/cookieUtils'
+import { createPerson } from '../../pco/requests';
 // import MDVPersonModal from '../shared/MDVPersonModal';
 
 function DonationEntry(props) {
@@ -27,9 +29,10 @@ function DonationEntry(props) {
 		  donation_type: donationType,
 		  source: source,
 		  donor_name: donorName,
+		  campus_code: getCookie("campus_code"),
 		  date: date
-	  }
-	  createDonation(donation, null)
+	  };
+	  createDonation(donation, props.user)
 	  props.fetchDonations();
 	  clearState();
 	};
@@ -44,21 +47,21 @@ function DonationEntry(props) {
 
 	const _createNewDonationType = (query) => {
 		console.log('creating new', query)
-		createDonationType(query);
+		createDonationType(query, props.user);
 	}
 
 	const _createNewSource = (query) => {
 		console.log('creating new ', query)
-		createDonationSource(query)
+		createDonationSource(query, props.user)
 	}
 
 	const _createNewPerson = (query) => {
 		console.log('creating new', query)
 		//setTempNewPersonName(query)
 		//setPModalOpened(true)
-		window.open('https://people.planningcenteronline.com/people', '_blank');
-
-	}
+		// window.open('https://people.planningcenteronline.com/people', '_blank');
+		createPerson({ name: query, jwt : getCookie('jwt')});
+	}	
 	
 	return (
 		<section>

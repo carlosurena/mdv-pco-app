@@ -50,7 +50,7 @@ function DonationTableEditableRow(props) {
 
 
 	const saveEdit = () => {
-		updateDonation(id,donationData)
+		updateDonation(id, donationData, props.user)
 		setIsEditing(false)
 	}
 
@@ -124,7 +124,7 @@ function DonationTableEditableRow(props) {
 					value={donationData.amount}
 				/>
 
-			</td>) : (<td>${donationData.amount}</td>)}
+			</td>) : (<td>{parseFloat(donationData.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</td>)}
 			{ isEditing ? (
 				<td>
 					<ActionIcon 

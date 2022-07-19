@@ -13,10 +13,10 @@ function ReportsTemplate(props) {
 			{element.donor_name && <td>{element.donor_name}</td>} 
 			{element.expense_type && <td>{element.expense_type}</td>}
 			{element.donation_type && <td>{element.donation_type}</td>} 
-			{element.amount && <td>${element.amount}</td>}
-			{props.isDistrictReport && (element.income ? <td>${element.income}</td> : <td>$0</td>)}
-			{props.isDistrictReport && (element.expenses ? <td>${element.expenses}</td> : <td>$0</td>)}
-			{props.isDistrictReport && (element.income ? <td>${(parseFloat(element.income)*.1).toFixed(2)}</td> : <td>$0</td>)}
+			{element.amount && <td>{parseFloat(element.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</td>}
+			{props.isDistrictReport && (element.income ? <td>{parseFloat(element.income).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</td> : <td>$0.00</td>)}
+			{props.isDistrictReport && (element.expenses ? <td>{parseFloat(element.expenses).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</td> : <td>$0.00</td>)}
+			{props.isDistrictReport && (element.income ? <td>{(parseFloat(element.income) * .1).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</td> : <td>$0.00</td>)}
 
 		</tr>
 	  ));
@@ -29,9 +29,9 @@ function ReportsTemplate(props) {
 				{props.data && props.data.length > 0 && props.data[0].donor_name && <th></th>} 
 				{props.data && props.data.length > 0 && props.data[0].expense_type && <th></th>}
 				{props.data && props.data.length > 0 && props.data[0].donation_type && <th></th>}
-				{!props.isDistrictReport && <th>${props.total}</th>}
-				{ props.isDistrictReport && <th>${props.totalDonations} </th>}
-				{ props.isDistrictReport && <th>${props.totalExpenses} </th>}
+				{!props.isDistrictReport && <th>${parseFloat(props.total).toFixed(2)}</th>}
+				{ props.isDistrictReport && <th>${parseFloat(props.totalDonations).toFixed(2)} </th>}
+				{ props.isDistrictReport && <th>${parseFloat(props.totalExpenses).toFixed(2)} </th>}
 				{ props.isDistrictReport && <th>${(parseFloat(props.totalDonations)*.1).toFixed(2)} </th>}
 			</tr>
 		</tfoot>

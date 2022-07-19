@@ -5,10 +5,16 @@ import { TrendingDown, TrendingUp, ReportAnalytics, ChevronRight, ExternalLink} 
 import logo from '../../assets/img/logo.png';
 import { useTranslation } from 'react-i18next';
 import { setCookie, getCookie, checkCookie } from '../../utils/cookieUtils'
+import { getAllCampuses } from '../../pco/requests';
+import { useHistory } from 'react-router-dom'
 
 function NavigationBar(props) {
 	const { t, i18n } = useTranslation();
+	const history = useHistory();
+
 	const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+	const [campus, setCampus] = useState('')
+	const [campuses, setCampuses] = useState([])
 
 	const changeLanguage = (lang) => {
 		setCookie("language",lang, 365);
@@ -21,46 +27,32 @@ function NavigationBar(props) {
 		}
 
 	}, [i18n])
+
+	useEffect(() => {
+		getAllCampuses().then( data => {
+			setCampuses(data);
+			if(checkCookie("campus_code")){
+				setCampus(data.find( c => c.value === getCookie("campus_code")))
+			} else {
+				setCampus(data[0].value)
+				setCookie("campus_code", data[0].value)
+			}
+		});
+	}, [])
+
+	const changeCampus = (q) => {
+		setCampus(campuses.find( c => c.value === q))
+		setCookie("campus_code", q)
+		history.go(0)
+	}
+
     return (
 		<Navbar p="xs" width={{ base: 250 }}>
-			<Navbar.Section><Image className='navbar-logo' src={logo} /></Navbar.Section>
+			<Navbar.Section>
+				<Image className='navbar-logo' src={logo} />
+				<Text className='campus-title'>{campus.label}</Text>
+			</Navbar.Section>
 			<Navbar.Section grow mt="md">
-				{/* <div className="nav-link">
-					<NavLink to="/">
-						<UnstyledButton onClick={() => console.log('try focusing button with tab')}>
-							<Group>
-								<Avatar size={30} color="blue"><Home size={20}/></Avatar>
-								<div>
-									<Text color="blue">Dashboard</Text>
-								</div>
-							</Group>
-						</UnstyledButton>
-					</NavLink>
-				</div>
-				<div className="nav-link">
-					<NavLink to="/checkins">
-						<UnstyledButton onClick={() => console.log('try focusing button with tab')}>
-							<Group>
-								<Avatar size={30} color="blue"><DiscountCheck size={20}/></Avatar>
-								<div>
-									<Text color="blue">Check-ins</Text>
-								</div>
-							</Group>
-						</UnstyledButton>
-					</NavLink>
-				</div>
-				<div className="nav-link">
-					<NavLink to="/people">
-						<UnstyledButton onClick={() => console.log('try focusing button with tab')}>
-							<Group>
-								<Avatar size={30} color="blue"><Man size={20}/></Avatar>
-								<div>
-									<Text color="blue">People</Text>
-								</div>
-							</Group>
-						</UnstyledButton>
-					</NavLink>
-				</div> */}
 				<div className="nav-link">
 					<NavLink to="/donations">
 						<UnstyledButton onClick={() => console.log('try focusing button with tab')}>
@@ -139,6 +131,13 @@ function NavigationBar(props) {
 								onChange={(query) => changeLanguage(query)}
 								value={i18n.language}
 							/>
+
+							<Select 
+								data={campuses} 
+								label={t('campus')}
+								onChange={(q) => changeCampus(q)}
+								value={campus.value}
+							/>	
 						</section>
 
 						<Button onClick={props.auth.signout}>{t('signout')}</Button>

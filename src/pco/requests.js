@@ -4,7 +4,7 @@ import { setCookie, checkCookie, getCookie } from '../utils/cookieUtils';
 
 export const getAllPeople = async (user) =>  {
 	let jwt = getCookie("jwt");
-	axios.get("https://api.planningcenteronline.com/people/v2/people?per_page=1000", {
+	return axios.get("https://api.planningcenteronline.com/people/v2/people?per_page=1000", {
 		headers: {
 			"Authorization": `Bearer ${jwt}`
 		}
@@ -14,6 +14,29 @@ export const getAllPeople = async (user) =>  {
 		}).catch(err => {
 			console.log(err)
 			alert("ERROR with getAllPeople.")
+		}
+		);
+
+}
+
+export const getAllCampuses = async (user) =>  {
+	let jwt = getCookie("jwt");
+	return axios.get("https://api.planningcenteronline.com/people/v2/campuses", {
+		headers: {
+			"Authorization": `Bearer ${jwt}`
+		}
+	})
+		.then(res => {
+			let data = [];
+			res.data.data.forEach( campus => {
+				let label = campus.attributes.name;
+				data.push({ value : campus.id , label, attributes : campus.attributes})
+
+			});
+			return data;
+		}).catch(err => {
+			console.log(err)
+			alert("ERROR with get all campuses.")
 		}
 		);
 
@@ -123,4 +146,16 @@ export const getCurrentUserData = async () => {
 		console.log('no cookie set, cant make call')
 		return null
 	}
+}
+
+export const createPerson = async (data) => {
+	return axios.post('.netlify/functions/createPerson', data)
+	  .then(function (response) {
+		console.log(response); //response.data = { access_token, token_type, expires_in, refresh_token, scope, created_at}
+		// setCookie('jwt',response.data.access_token)
+		return response.data
+	  })
+	  .catch(function (error) {
+		console.error(error);
+	  });
 }

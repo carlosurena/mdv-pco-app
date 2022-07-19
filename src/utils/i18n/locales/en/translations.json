@@ -19,9 +19,9 @@
 	"income":"Income",
 	"tithes":"Tithes",
 	"individual_report_title": "Individual Report",
-	"individual_report_title_generated": "Individual Report for ",
+	"individual_report_title_generated": "Donations Report: ",
 	"individual_report_desc": "Quickly generate reports for individual people on any given date range.",
-	"general_report_title": "General Tithes and Offerings Report",
+	"general_report_title": "General Report",
 	"general_report_title_generated": "General Report",
 	"general_report_desc": "Line-by-line reports on every donation made within the specified date range. Or, create an aggregate report to see who your biggest donors are!",
 	"income_expense_report_title": "Income/Expense Report",
@@ -38,5 +38,8 @@
 	"language": "Language",
 	"planning_center": "Planning Center",
 	"create_pco": "Create {{query}} on Planning Center",
-	"create" : "Create new {{query}}"
+	"create" : "Create new {{query}}",
+	"filterby_donation_type": "Filter By Donation Type",
+	"filterby_expense_type": "Filter By Expense Type",
+	"secretary" : "Secretary"
 }

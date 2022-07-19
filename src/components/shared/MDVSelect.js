@@ -28,9 +28,9 @@ function MDVSelect(props) {
 			data={props.data} 
 			label={props.label}
 			searchable
-			creatable
+			creatable={!!props.createNewOption}
 			getCreateLabel={(query) => props.labelLookupRequired ? t('create_pco', {query}) : t('create', {query})}
-			onCreate={(query) => props.createNewOption(query)}
+			onCreate={props.createNewOption ? (query) => props.createNewOption(query) : () => null}
 			onChange={(query) => changeValue(query)}
 			value={props.value}
 			maxDropdownHeight={160}

@@ -1,41 +1,72 @@
 import React, {useState, useEffect} from 'react'
-import { getDonations, getDonationTotalsAggregate } from '../../../firebase/donationRequests'
+import { getDonations, getDonationTotalsAggregate, getDonationTypes } from '../../../firebase/donationRequests'
 import ReportsTemplate from './ReportsTemplate';
 import { isToday } from 'date-fns'
-import { Modal, Button, Switch, Indicator } from '@mantine/core'
+import { Modal, Button, Switch, Indicator, MultiSelect, SegmentedControl } from '@mantine/core'
 import { DateRangePicker } from '@mantine/dates'
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import { ReportsPDFTemplate } from './ReportsPDFTemplate'
 import { useTranslation } from 'react-i18next';
+import { getExpenses, getExpenseTotalsAggregate, getExpenseTypes } from '../../../firebase/expenseRequests';
 
 	  
 function GeneralReport(props) {
 	const { t } = useTranslation();
 	const [donationData, setDonationData] = useState([]);
+	const [donationType, setDonationType] = useState();
+	const [donationTypes, setDonationTypes] = useState('');
+	const [expenseData, setExpenseData] = useState([]);
+	const [expenseType, setExpenseType] = useState();
+	const [expenseTypes, setExpenseTypes] = useState('');
 	const [total, setTotal] = useState(0);
 	const [dates, setDates] = useState('')
 	const [modalOpened, setModalOpened] = useState(true);
 	const [title, setTitle] = useState('')
-	const [isAggregate, setIsAggregate] = useState('')
+	const [isAggregate, setIsAggregate] = useState(false)
+	const [isExpense, setIsExpense] = useState(false)
 
 	useEffect(() => {
+		getDonationTypes().then( data => {
+			setDonationTypes(data)
+		})
+		getExpenseTypes().then( data => {
+			setExpenseTypes(data)
+		})
 	}, [])
 	
 	const generateReport = () => {
 		setTitle(t('general_report_title_generated'))
 		if (isAggregate){
-			getDonationTotalsAggregate(dates[0], dates[1]).then( data => {
-				setDonationData(data.data)
-				setTotal(data.total)
-				setModalOpened(false)
-
-			})
+			if(isExpense) {
+				getExpenseTotalsAggregate(dates[0], dates[1], expenseType).then( data => {
+					setExpenseData(data.data)
+					setTotal(data.total)
+					setModalOpened(false)
+				})
+			}else {
+				getDonationTotalsAggregate(dates[0], dates[1], donationType).then( data => {
+					setDonationData(data.data)
+					setTotal(data.total)
+					setModalOpened(false)
+				})
+			}
 		} else {
-			getDonations(dates[0] , dates[1]).then( data => {
-				setDonationData(data.data)
-				setTotal(data.total)
-				setModalOpened(false)
-			})
+			if (isExpense) {
+				getExpenses(dates[0], dates[1], expenseType).then( data => {
+					console.log(data)
+					setExpenseData(data.data);
+					setTotal(data.total);
+					setModalOpened(false);
+				})
+
+			} else {
+				getDonations(dates[0] , dates[1], donationType).then( data => {
+					setDonationData(data.data)
+					setTotal(data.total)
+					setModalOpened(false)
+				})
+			}
+			
 		}
 	}
 	const handleModalClose = () => {
@@ -49,6 +80,13 @@ function GeneralReport(props) {
 				onClose={handleModalClose}
 				title={t('general_report_title')}
 			>
+				<section className='centered-control'>
+					<SegmentedControl 
+						data={[{label: t('donations'), value: 'donations'}, {label: t('expenses'), value: 'expenses'}]}
+						value={isExpense ? 'expenses' : 'donations'}
+						onChange={(q) => q === 'expenses' ? setIsExpense(true) : setIsExpense(false)}
+					/>
+				</section>
 				<section>
 					<DateRangePicker 
 						placeholder={t('pick_date')}
@@ -69,6 +107,25 @@ function GeneralReport(props) {
 					/>
 				</section>
 				<section>
+					{isExpense ? 
+					expenseTypes && 
+					<MultiSelect 
+						data={expenseTypes} 
+						label={t('filterby_expense_type')}
+						onChange={(query) => setExpenseType(query)}
+						disabled={isAggregate}
+						value={expenseType}
+					/> : 
+					donationTypes && 
+					<MultiSelect 
+						data={donationTypes} 
+						label={t('filterby_donation_type')}
+						onChange={(query) => setDonationType(query)}
+						disabled={isAggregate}
+						value={donationType}
+					/>}
+				</section>
+				<section>
 					<Switch 
 						label={t('aggregate_data')}
 						checked={isAggregate}
@@ -80,17 +137,17 @@ function GeneralReport(props) {
 			</Modal>
 		
 
-		{donationData && donationData.length > 0 ? (
+		{((donationData && donationData.length > 0) || (expenseData && expenseData.length > 0)) ? (
 			<div>
 				<ReportsTemplate 
 					title={title} 
-					data={donationData}
+					data={isExpense ? expenseData : donationData }
 					total={total}
 				/>
 				<PDFViewer className='pdf-viewer'>
-					<ReportsPDFTemplate title={title} dates={dates} data={donationData} total={total}/>
+					<ReportsPDFTemplate title={title} dates={dates} data={isExpense ? expenseData : donationData} total={total}/>
 				</PDFViewer>
-				<PDFDownloadLink document={<ReportsPDFTemplate title={title} dates={dates} data={donationData} total={total}/>} fileName="test">
+				<PDFDownloadLink document={<ReportsPDFTemplate title={title} dates={dates} data={isExpense ? expenseData : donationData} total={total}/>} fileName="test">
 					{({loading}) => loading ? (<Button disabled>{t('loading')}</Button>) : (<Button>{t('download')}</Button>)}
 				</PDFDownloadLink>
 			</div>

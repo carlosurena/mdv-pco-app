@@ -31,7 +31,7 @@ function FinancialReportsPage() {
 					<section>
 						<ReportListCard PAGES={PAGES} linkTo={PAGES.INDIVIDUAL} activePage={activePage} setActivePage={setActivePage}/>
 						<ReportListCard PAGES={PAGES}  linkTo={PAGES.GENERAL} activePage={activePage} setActivePage={setActivePage}/>
-						<ReportListCard PAGES={PAGES}  linkTo={PAGES.INCOME_EXPENSE} activePage={activePage} setActivePage={setActivePage}/>
+						{/* <ReportListCard PAGES={PAGES}  linkTo={PAGES.INCOME_EXPENSE} activePage={activePage} setActivePage={setActivePage}/> */}
 						<ReportListCard PAGES={PAGES}  linkTo={PAGES.DISTRICT} activePage={activePage} setActivePage={setActivePage}/>
 					</section>
 				) : 

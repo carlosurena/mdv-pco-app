@@ -6,6 +6,7 @@ import MDVSelect from '../shared/MDVSelect';
 import MDVNumberInput from '../shared/MDVNumberInput';
 import { isToday } from 'date-fns'
 import { useTranslation } from 'react-i18next';
+import { getCookie } from '../../utils/cookieUtils';
 
 function ExpenseEntry(props) {
 	const { t } = useTranslation();
@@ -22,9 +23,10 @@ function ExpenseEntry(props) {
 		  amount : amount,
 		  expense_type: expenseType,
 		  method: method,
+		  campus_code: getCookie("campus_code"),
 		  date: date
 	  }
-	  createExpense(expense, null)
+	  createExpense(expense, props.user)
 	  props.fetchExpenses();
 	  clearState();
 	};
@@ -37,11 +39,11 @@ function ExpenseEntry(props) {
 
 	const _createNewExpenseType = (query) => {
 		console.log('creating new', query)
-		createExpenseType(query);
+		createExpenseType(query, props.user);
 	}
 	const _createNewExpenseMethod = (query) => {
 		console.log('creating new', query)
-		createExpenseMethod(query);
+		createExpenseMethod(query, props.user);
 	}
 	
 	

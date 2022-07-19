@@ -1,21 +1,27 @@
 import firebase from './firebase'
 import { format } from 'date-fns';
-export const getDonations = async (startDate = null, endDate = null) => {
+import { getCookie } from '../utils/cookieUtils';
+export const getDonations = async (startDate = null, endDate = null, types = null) => {
 	let db = firebase.firestore();
+	let campusCode = getCookie('campus_code');
 	let donationsRef;
 	let total = 0;
-	if(startDate != null && endDate != null) {
-		donationsRef = db.collection('donations')
-			.where('date', '>=', startDate)
-			.where('date','<=',endDate)
-			.orderBy('date', 'desc');
-	}else if(startDate != null){
-		donationsRef = db.collection('donations')
-			.where('date', '>=', startDate)
-			.orderBy('date', 'desc');
-	} else{
-		donationsRef = db.collection('donations').orderBy('date', 'desc');
+	donationsRef = db.collection('donations');
+	if(startDate != null) {
+		donationsRef = donationsRef.where('date', '>=', startDate)
 	}
+	if(endDate != null){
+		donationsRef = donationsRef.where('date', '<=', endDate)
+	} 
+	if(campusCode != null){
+		donationsRef = donationsRef.where('campus_code', '==', campusCode);
+	}
+	if(types != null && types.length > 0){
+		console.log(types)
+		donationsRef = donationsRef.where('donation_type', 'in', types);
+	}
+	donationsRef = donationsRef.orderBy('date', 'desc');
+
 	return donationsRef.get().then(donations => {
 		var data = donations.docs.map(doc => {
 			return {
@@ -37,7 +43,6 @@ export const getDonations = async (startDate = null, endDate = null) => {
 export const getDonationTypes = async () => {
 	let db = firebase.firestore();
 	let donationTypesRef = db.collection('donation_types');
-
 	return donationTypesRef.get().then(types => {
 		return types.docs.map(doc => {
 			return {
@@ -63,9 +68,12 @@ export const createDonation = (donation, user) => {
 			donor_name: donation.donor_name,
 			donation_type: donation.donation_type,
 			source: donation.source,
-            creatorID: 'test',
-            creatorName: 'test',
+			campus_code: donation.campus_code,
+            creatorID: user.id,
+            creatorName: user.attributes.name,
             createdOn: new Date(),
+			updatorID: user.id,
+			updatorName: user.attributes.name,
             updatedOn: new Date()
 	}).then((donation) => {
 		console.log("success!",donation)
@@ -80,9 +88,11 @@ export const createDonationType = (dt, user) => {
 	let donationsRef = db.collection('donation_types');
 	donationsRef.add({
 		name: dt,
-		createdBy: 'test',
-		creatorName: 'test',
+		creatorID:  user.id,
+		creatorName: user.attributes.name,
 		createdOn: new Date(),
+		updatorID: user.id,
+		updatorName: user.attributes.name,
 		updatedOn: new Date()
 	}).then((donation) => {
 		console.log("success!",donation)
@@ -96,9 +106,11 @@ export const createDonationSource = (ds, user) => {
 	let donationsRef = db.collection('donation_sources');
 	donationsRef.add({
 		name: ds,
-		createdBy: 'test',
-		creatorName: 'test',
+		creatorID: user.id,
+		creatorName: user.attributes.name,
 		createdOn: new Date(),
+		updatorID: user.id,
+		updatorName: user.attributes.name,
 		updatedOn: new Date()
 	}).then((donation) => {
 		console.log("success!",donation)
@@ -116,7 +128,7 @@ export const deleteDonation = async (id) => {
 	});
 }
 
-export const updateDonation = async (id, data) => {
+export const updateDonation = async (id, data, user) => {
 	let db = firebase.firestore();
 	console.log('updating donation', id, data)
 	id && db.collection('donations').doc(id).set({
@@ -127,8 +139,9 @@ export const updateDonation = async (id, data) => {
 			donor_name: data.donor_name,
 			donation_type: data.donation_type,
 			source: data.source,
-			updatedBy: 'test',
-            updatedOn: new Date()
+			updatorID: user.id,
+			updatorName: user.attributes.name,
+			updatedOn: new Date()
 	}).then(() => {
 		console.log("success UPDATE!")
 	}).catch( (err) => {
@@ -138,12 +151,15 @@ export const updateDonation = async (id, data) => {
 
 export const getDonationsByDateAndPerson = async (id,startDate,endDate) => {
 	let db = firebase.firestore();
+	let campusCode = getCookie("campus_code");
+
 	console.log('getting data for user', id, startDate, endDate );
 	let total = 0;
 	let donationsRef = db.collection('donations')
 		.where('donor_pco_id', '==', id)
 		.where('date', '>=', startDate)
 		.where('date','<=',endDate)
+		.where('campus_code','==', campusCode)
 		.orderBy('date', 'desc'); //.where('date', '>=', startDate).where(date, '<=', endDate)
 	return donationsRef.get().then(donations => {
 		var data = donations.docs.map(doc => {
@@ -165,7 +181,12 @@ export const getDonationsByDateAndPerson = async (id,startDate,endDate) => {
 
 export const getDonationTotalsByPerson = async (id, startDate = null, endDate = null) => {
 	let db = firebase.firestore();
-	let donationsRef = db.collection('donations').where('donor_pco_id', '==', id);
+	let campusCode = getCookie("campus_code");
+
+	let donationsRef = db.collection('donations')
+		.where('donor_pco_id', '==', id)
+		.where('campus_code','==', campusCode);
+
 	if (startDate != null && endDate != null) {
 		donationsRef = donationsRef.where('date', '>=', startDate)
 			.where('date','<=',endDate)
@@ -192,8 +213,12 @@ export const getDonationTotalsByPerson = async (id, startDate = null, endDate = 
 
 export const getDonationTotalsAggregate = async (startDate = null, endDate = null) => {
 	let db = firebase.firestore();
-	let donationsRef = db.collection('donations').where('date', '>=', startDate)
-			.where('date','<=',endDate)
+	let campusCode = getCookie("campus_code");
+
+	let donationsRef = db.collection('donations')
+		.where('date', '>=', startDate)
+		.where('date','<=',endDate)
+		.where('campus_code','==', campusCode);
 	
 	let total = 0;
 	return donationsRef.get().then( donations => {
@@ -226,8 +251,12 @@ export const getDonationTotalsAggregate = async (startDate = null, endDate = nul
 
 export const getDonationTotalsAggregateByDate = async (startDate = null, endDate = null) => {
 	let db = firebase.firestore();
-	let donationsRef = db.collection('donations').where('date', '>=', startDate)
-			.where('date','<=',endDate)
+	let campusCode = getCookie("campus_code");
+
+	let donationsRef = db.collection('donations')
+		.where('date', '>=', startDate)
+		.where('date','<=',endDate)
+		.where('campus_code','==', campusCode);
 	
 	let total = 0;
 	return donationsRef.get().then( donations => {

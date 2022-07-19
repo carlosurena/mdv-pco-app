@@ -6,9 +6,10 @@ import { getExpenses, deleteExpense } from '../../firebase/expenseRequests'
 import firebase from '../../firebase/firebase'
 import ExpenseTableEditableRow from './ExpenseTableEditableRow'
 import { useTranslation } from 'react-i18next'
+import { getCookie } from '../../utils/cookieUtils'
 const db = firebase.firestore();
 
-function ExpensesPage() {
+function ExpensesPage(props) {
 	const { t } = useTranslation(); 
 	const [expenseData, setExpenseData] = useState([]);
 	const [people, setPeople] = useState([]);
@@ -32,7 +33,7 @@ function ExpensesPage() {
 
 	const tableRows = expenseData.map((expense) => {
 	return (
-			<ExpenseTableEditableRow expense={expense} key={expense.id} deleteExpense={_deleteExpense} expenseTypes={expenseTypes} methods={methods} />
+			<ExpenseTableEditableRow expense={expense} key={expense.id} deleteExpense={_deleteExpense} user={props.auth.user.data} expenseTypes={expenseTypes} methods={methods} />
 		)
 	});
 
@@ -42,7 +43,7 @@ function ExpensesPage() {
 		}
 			
 		
-		const unsubscribe = db.collection('expenses').orderBy('date', 'desc').onSnapshot(snap => {
+		const unsubscribe = db.collection('expenses').where("campus_code", "==", getCookie("campus_code")).orderBy('date', 'desc').onSnapshot(snap => {
 			const data = snap.docs.map(doc => doc.data())
 			setExpenseData(data)
 		  });
@@ -78,7 +79,7 @@ function ExpensesPage() {
 	
 	return (
 		<div>
-			<ExpenseEntry fetchExpenses={fetchExpenses} people={people} expenseTypes={expenseTypes} methods={methods}/>
+			<ExpenseEntry fetchExpenses={fetchExpenses} people={people} expenseTypes={expenseTypes} user={props.auth.user.data} methods={methods}/>
 			<Table>
 				<thead>
 				<tr>

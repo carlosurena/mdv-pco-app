@@ -37,7 +37,7 @@ function ExpenseTableEditableRow(props) {
 	}
 
 	const saveEdit = () => {
-		updateExpense(id,expenseData)
+		updateExpense(id,expenseData, props.user)
 		setIsEditing(false)
 	}
 
@@ -101,7 +101,7 @@ function ExpenseTableEditableRow(props) {
 					value={expenseData.amount}
 				/>
 
-			</td>) : (<td>${expenseData.amount}</td>)}
+			</td>) : (<td>{parseFloat(expenseData.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</td>)}
 			{ isEditing ? (
 					<td>
 						<ActionIcon 

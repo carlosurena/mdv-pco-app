@@ -108,7 +108,7 @@ function DistrictReport(props) {
 					<ReportsTemplate 
 						title={title} 
 						data={aggregateData}
-						total={(parseFloat(totalDonations) - parseFloat(totalExpenses)).toFixed(2)}
+						total={(parseFloat(totalDonations) - parseFloat(totalExpenses)).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}
 						totalDonations={totalDonations}
 						totalExpenses={totalExpenses}
 						isDistrictReport={true}
@@ -118,7 +118,7 @@ function DistrictReport(props) {
 							title={title} 
 							dates={dates} 
 							data={aggregateData} 
-							total={(parseFloat(totalDonations) - parseFloat(totalExpenses)).toFixed(2)} 
+							total={(parseFloat(totalDonations) - parseFloat(totalExpenses))}
 							totalDonations={totalDonations}
 							totalExpenses={totalExpenses}
 							isDistrictReport={true}
@@ -129,7 +129,7 @@ function DistrictReport(props) {
 							title={title} 
 							dates={dates} 
 							data={aggregateData} 
-							total={(parseFloat(totalDonations) - parseFloat(totalExpenses)).toFixed(2)} 
+							total={(parseFloat(totalDonations) - parseFloat(totalExpenses))}
 							totalDonations={totalDonations}
 							totalExpenses={totalExpenses}
 							isDistrictReport={true}

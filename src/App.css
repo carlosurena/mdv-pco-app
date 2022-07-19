@@ -56,6 +56,15 @@ section {
 	background-color: #f8f9fa;
 	border-radius: 4px;
 }
+
+.centered-control {
+	text-align: center;
+}
+
+.campus-title {
+	padding: 0 8px;
+	text-align: center;
+}
 /*************** APPSHELL/NAVBAR ********************/
 .mantine-Navbar-root, .mantine-AppShell-main{
 	min-height: 100vh;

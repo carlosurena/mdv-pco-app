@@ -6,10 +6,11 @@ import { getDonations, deleteDonation } from '../../firebase/donationRequests'
 import firebase from '../../firebase/firebase'
 import DonationTableEditableRow from './DonationTableEditableRow'
 import { useTranslation } from 'react-i18next'
+import { getCookie } from '../../utils/cookieUtils';
 
 const db = firebase.firestore();
 
-function DonationsPage() {
+function DonationsPage(props) {
 	const { t } = useTranslation();
 	const [donationData, setDonationData] = useState([]);
 	const [people, setPeople] = useState([]);
@@ -33,7 +34,7 @@ function DonationsPage() {
 
 	const tableRows = donationData.map((donation) => {
 	return (
-			<DonationTableEditableRow donation={donation} key={donation.id} deleteDonation={_deleteDonation} people={people} donationTypes={donationTypes} sources={sources}/>
+			<DonationTableEditableRow donation={donation} key={donation.id} deleteDonation={_deleteDonation} user={props.auth.user.data} people={people} donationTypes={donationTypes} sources={sources}/>
 		)
 	});
 
@@ -43,7 +44,7 @@ function DonationsPage() {
 		}
 			
 		
-		const unsubscribe = db.collection('donations').orderBy('date', 'desc').onSnapshot(snap => {
+		const unsubscribe = db.collection('donations').where("campus_code","==",getCookie("campus_code")).orderBy('date', 'desc').onSnapshot(snap => {
 			const data = snap.docs.map(doc => doc.data())
 			setDonationData(data)
 		  });
@@ -76,7 +77,7 @@ function DonationsPage() {
 	
 	return (
 		<div>
-			<DonationEntry fetchDonations={fetchDonations} people={people} donationTypes={donationTypes} sources={sources}/>
+			<DonationEntry fetchDonations={fetchDonations} people={people} donationTypes={donationTypes} user={props.auth.user.data} sources={sources}/>
 			<Table highlightOnHover >
 				<thead>
 					<tr>

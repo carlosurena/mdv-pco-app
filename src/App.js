@@ -32,13 +32,13 @@ function App() {
 					})}
 				>
 					<Switch>
-						<PrivateRoute exact path="/" component={DonationsPage} />
+						<PrivateRoute exact path="/" component={() => <DonationsPage auth={auth} />} />
 						{/* <Route exact path="/checkins" component={Checkins} /> */}
 						{/* <Route exact path="/people" component={People} /> */}
-						<PrivateRoute exact path="/donations" component={DonationsPage} />
-						<PrivateRoute exact path="/expenses" component={ExpensesPage} />
-						<PrivateRoute exact path="/reports" component={FinancialReportsPage} />
-						<PrivateRoute path="/people/:person_id" component={Person} />
+						<PrivateRoute exact path="/donations" component={() => <DonationsPage auth={auth} />} />
+						<PrivateRoute exact path="/expenses" component={() => <ExpensesPage auth={auth} />} />
+						<PrivateRoute exact path="/reports" component={() => <FinancialReportsPage auth={auth} />} />
+						<PrivateRoute path="/people/:person_id" component={() => <Person auth={auth} />} />
 					</Switch>
 				</AppShell> :
 				<div>Hi, {auth.user.data.attributes.name}! Your Planning Center Account does not have the required privileges to access this site. Please ask an existing administrator for admin access.</div>)
