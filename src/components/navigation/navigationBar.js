@@ -34,7 +34,7 @@ function NavigationBar(props) {
 			if(checkCookie("campus_code")){
 				setCampus(data.find( c => c.value === getCookie("campus_code")))
 			} else {
-				setCampus(data[0].value)
+				setCampus(data[0])
 				setCookie("campus_code", data[0].value)
 			}
 		});
