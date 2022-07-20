@@ -131,7 +131,7 @@ export const deleteDonation = async (id) => {
 export const updateDonation = async (id, data, user) => {
 	let db = firebase.firestore();
 	console.log('updating donation', id, data)
-	id && db.collection('donations').doc(id).set({
+	id && db.collection('donations').doc(id).update({
 			id: data.id,
 			date: data.date,
 			donor_pco_id: data.donor_pco_id,
@@ -149,14 +149,14 @@ export const updateDonation = async (id, data, user) => {
 	});
 }
 
-export const getDonationsByDateAndPerson = async (id,startDate,endDate) => {
+export const getDonationsByDateAndPerson = async (ids,startDate,endDate) => {
 	let db = firebase.firestore();
 	let campusCode = getCookie("campus_code");
 
-	console.log('getting data for user', id, startDate, endDate );
+	console.log('getting data for user', ids, startDate, endDate );
 	let total = 0;
 	let donationsRef = db.collection('donations')
-		.where('donor_pco_id', '==', id)
+		.where('donor_pco_id', 'in', ids)
 		.where('date', '>=', startDate)
 		.where('date','<=',endDate)
 		.where('campus_code','==', campusCode)

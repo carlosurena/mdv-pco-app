@@ -1,17 +1,39 @@
 import React, {useEffect, useState} from 'react';
-import { Modal, Button, Group, TextInput } from '@mantine/core';
+import { Modal, Button, Group, TextInput, Chips, Chip } from '@mantine/core';
 import { useTranslation} from 'react-i18next';
+import { createPerson } from '../../pco/requests';
+import { getCookie } from '../../utils/cookieUtils';
 
 function MDVPersonModal(props) {
 	const { t } = useTranslation();
 	const [first, setFirst] = useState(props.person)
 	const [last, setLast] = useState('')
-	const [phone, setPhone] = useState('')
-	const [email, setEmail] = useState('')
+	const [gender, setGender] = useState('')
 
 	useEffect(() => {
 		setFirst(props.person)
 	}, [props.person])
+
+	const handleSubmit = () => {
+		let data = {
+			first_name : first,
+			last_name : last,
+			gender,
+			campus_code: getCookie('campus_code'),
+			jwt : getCookie('jwt')
+		}
+		createPerson(data).then( res => {
+			props.setOpened(false)
+			clearValues();
+		});
+
+	}
+
+	const clearValues = () => {
+		setFirst('');
+		setLast('');
+		setGender('');
+	}
 	return (
 		<>
 			<Modal
@@ -36,23 +58,18 @@ function MDVPersonModal(props) {
 							onChange={(event) => setLast(event.currentTarget.value)}
 						/>
 					</Group>
+				</section>
+				<section>
 					<Group>
-						<TextInput 
-							placeholder={t('phone')}
-							label={t('phone')}
-							value={phone} 
-							onChange={(event) => setPhone(event.currentTarget.value)}
-						/>
-						<TextInput 
-							placeholder={t('email')}
-							label={t('email')}
-							value={email} 
-							onChange={(event) => setEmail(event.currentTarget.value)}
-						/>
+						<Chips multiple={false} value={gender} onChange={setGender}>
+							<Chip value={'M'}>{t('male')}</Chip>
+							<Chip value={'F'}>{t('female')}</Chip>
+						</Chips>
 					</Group>
 				</section>
+					
 				<Group>
-					<Button onClick={() => createPerson()} disabled={!(first && last)}>{t('submit')}</Button>
+					<Button onClick={() => handleSubmit()} disabled={!(first && last && gender)}>{t('submit')}</Button>
 				</Group>
 			</Modal>
 		</>

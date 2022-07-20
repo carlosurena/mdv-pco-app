@@ -73,6 +73,29 @@ export const getAllPeopleReshaped = async () => {
 	
 }
 
+export const searchPeopleByName = async (name) => {
+	let jwt = getCookie('jwt');
+	return axios.get("https://api.planningcenteronline.com/people/v2/people?per_page=25&where[search_name]=" + name, {
+		headers: {
+			"Authorization": `Bearer ${jwt}`
+		}
+	}).then( res => {
+		let reshapedPeople = []
+		let data = res.data.data
+		data.forEach( person => {
+			let label =
+				(person.attributes.first_name ? person.attributes.first_name : '' ) + 
+				(person.attributes.middle_name ? ' ' + person.attributes.middle_name : '') + 
+				(person.attributes.last_name ? ' ' + person.attributes.last_name : '');
+			let image = person.attributes.avatar;
+			let id = person.id;
+			let value = person.id
+			reshapedPeople.push({ value, image, id, label})
+		});
+		return reshapedPeople;
+	})
+}
+
 export const getPersonByID = async (id) => {
 	let jwt = getCookie("jwt");
 	let person = axios.get("https://api.planningcenteronline.com/people/v2/people/"+ id , {

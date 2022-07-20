@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { ActionIcon, Indicator } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import MDVSelect from '../shared/MDVSelect';
+import MDVPeopleSelect from '../shared/MDVPeopleSelect'
 import MDVNumberInput from '../shared/MDVNumberInput';
 import { format, isToday } from 'date-fns'
 import { updateDonation } from '../../firebase/donationRequests'
@@ -87,12 +88,13 @@ function DonationTableEditableRow(props) {
 			</td>) : (<td>{donationData.date && format(donationData.date, 'MM/dd/yyyy')}</td>)}
 			{ isEditing ? (
 			<td>
-				<MDVSelect 
+				<MDVPeopleSelect 
 						data={props.people}
 						label={t('name')}
 						updateLabelName={updateDonorName}
 						value={donationData.donor_pco_id}
 						setValue={updateDonor}
+						name={donationData.donor_name}
 						labelLookupRequired={true}
 					/>
 			</td>) : (<td>{donationData.donor_name}</td>)}

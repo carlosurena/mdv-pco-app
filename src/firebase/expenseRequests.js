@@ -130,7 +130,7 @@ export const deleteExpense = async (id) => {
 
 export const updateExpense = async (id, data, user) => {
 	let db = firebase.firestore();
-	id && db.collection('expenses').doc(id).set({
+	id && db.collection('expenses').doc(id).update({
 			id: data.id,
 			date: data.date,
 			amount: data.amount,

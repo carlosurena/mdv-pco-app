@@ -41,5 +41,10 @@
 	"create" : "Crear {{query}}",
 	"filterby_donation_type": "Filtrar por tipo de Donacion",
 	"filterby_expense_type": "Filtrar por tipo de Gasto",
-	"secretary":"Secretaria"
+	"secretary":"Secretaria",
+	"male": "Hombre",
+	"female": "Mujer",
+	"first_name": "Nombre",
+	"last_name": "Apellido",
+	"add_a_person": "Nueva Persona"
 }

@@ -3,12 +3,12 @@ import { Grid, Button, Indicator } from '@mantine/core'
 import {DatePicker} from '@mantine/dates';
 import { createDonation, createDonationSource, createDonationType } from '../../firebase/donationRequests';
 import MDVSelect from '../shared/MDVSelect';
+import MDVPeopleSelect from '../shared/MDVPeopleSelect';
 import MDVNumberInput from '../shared/MDVNumberInput';
 import { isToday } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { getCookie } from '../../utils/cookieUtils'
-import { createPerson } from '../../pco/requests';
-// import MDVPersonModal from '../shared/MDVPersonModal';
+import MDVPersonModal from '../shared/MDVPersonModal';
 
 function DonationEntry(props) {
 	const { t } = useTranslation();
@@ -18,8 +18,8 @@ function DonationEntry(props) {
 	const [source, setSource] = useState('');
 	const [date, setDate] = useState('');
 	const [amount, setAmount] = useState('');
-	// const [pModalOpened, setPModalOpened] = useState(false)
-	// const [tempNewPersonName, setTempNewPersonName] = useState('')
+	const [pModalOpened, setPModalOpened] = useState(false)
+	const [tempNewPersonName, setTempNewPersonName] = useState('')
 	const transferValue = (event) => {
 	  event.preventDefault();
 
@@ -57,15 +57,14 @@ function DonationEntry(props) {
 
 	const _createNewPerson = (query) => {
 		console.log('creating new', query)
-		//setTempNewPersonName(query)
-		//setPModalOpened(true)
+		setTempNewPersonName(query)
+		setPModalOpened(true)
 		// window.open('https://people.planningcenteronline.com/people', '_blank');
-		createPerson({ name: query, jwt : getCookie('jwt')});
 	}	
 	
 	return (
 		<section>
-			{/* <MDVPersonModal person={tempNewPersonName} opened={pModalOpened} setOpened={setPModalOpened}/> */}
+			<MDVPersonModal person={tempNewPersonName} opened={pModalOpened} setOpened={setPModalOpened}/>
 			<h1>{t('donations')}</h1>
 		  {props.people && 
 		  	<Grid align='flex-end'>
@@ -89,7 +88,7 @@ function DonationEntry(props) {
 					/>
 				</Grid.Col>
 				  <Grid.Col span={2}>
-					<MDVSelect 
+					<MDVPeopleSelect 
 						data={props.people}
 						label={t('name')}
 						updateLabelName={setDonorName}

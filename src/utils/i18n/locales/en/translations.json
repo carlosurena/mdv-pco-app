@@ -41,5 +41,10 @@
 	"create" : "Create new {{query}}",
 	"filterby_donation_type": "Filter By Donation Type",
 	"filterby_expense_type": "Filter By Expense Type",
-	"secretary" : "Secretary"
+	"secretary" : "Secretary",
+	"male": "Male",
+	"female": "Female",
+	"first_name": "First",
+	"last_name": "Last",
+	"add_a_person": "New Person"
 }

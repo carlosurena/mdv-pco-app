@@ -19,8 +19,8 @@ exports.handler = async (event) => {
 			"Authorization": `Bearer ${jwt}`
 		}
 	}).then( response => {
-		console.log('worked')
-		console.log(response.data)
+		console.log('retrieved current user data (getME)')
+		// console.log(response.data)
 
 		//res.send(response.data)
 		return {

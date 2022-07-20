@@ -2,9 +2,8 @@ import React, {useState, useEffect} from 'react'
 import { getDonationsByDateAndPerson } from '../../../firebase/donationRequests'
 import ReportsTemplate from './ReportsTemplate';
 import { isToday } from 'date-fns'
-import { Modal, Button, Indicator} from '@mantine/core'
+import { Modal, MultiSelect, Button, Indicator} from '@mantine/core'
 import { DateRangePicker } from '@mantine/dates'
-import MDVSelect from '../../shared/MDVSelect';
 import { getAllPeopleReshaped } from '../../../pco/requests'
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import { ReportsPDFTemplate } from './ReportsPDFTemplate'
@@ -13,8 +12,8 @@ import { useTranslation } from 'react-i18next';
 function IndividualReport(props) {
 	const { t } = useTranslation();
 	const [donationData, setDonationData] = useState([]);
-	const [id, setId] = useState('')
-	const [donorName, setDonorName] = useState('')
+	const [ids, setIds] = useState('')
+	// const [donorNames, setDonorNames] = useState('')
 	const [dates, setDates] = useState('')
 	const [modalOpened, setModalOpened] = useState(true);
 	const [people, setPeople] = useState([])
@@ -29,8 +28,10 @@ function IndividualReport(props) {
 	}, [])
 	
 	const generateReport = async () => {
-		setTitle(t('individual_report_title_generated') + donorName)
-		getDonationsByDateAndPerson(id, dates[0] , dates[1]).then( data => {
+		// let flattenedDonorNames = donorNames && donorNames.join(", ")
+		let flattenedDonorNames = ''
+		setTitle(t('individual_report_title_generated') + flattenedDonorNames)
+		getDonationsByDateAndPerson(ids, dates[0] , dates[1]).then( data => {
 			setDonationData(data.data)
 			setTotal(data.total)
 			setModalOpened(false)
@@ -50,13 +51,12 @@ function IndividualReport(props) {
 				title={t('individual_report_title')}
 			>
 				<section>
-					<MDVSelect 
+					<MultiSelect
 						data={people}
 						label={t('donor')}
-						updateLabelName={setDonorName}
-						value={id}
-						setValue={setId}
-						labelLookupRequired={true}
+						value={ids}
+						maxSelectedValues={5}
+						onChange={(query) => setIds(query)}
 					/>
 					<DateRangePicker 
 						placeholder={t('pick_date')}
@@ -76,7 +76,7 @@ function IndividualReport(props) {
 						value={dates}
 					/>
 				</section>
-				<Button disabled={!(id && dates && dates[0] !== null && dates[1] !== null)} onClick={() => generateReport()}>{t('generate_report')}</Button>
+				<Button disabled={!(ids && ids.length > 0 && dates && dates[0] !== null && dates[1] !== null)} onClick={() => generateReport()}>{t('generate_report')}</Button>
 			</Modal>
 			{donationData && donationData.length > 0 ? (
 				<div>
