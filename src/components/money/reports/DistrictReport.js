@@ -1,12 +1,14 @@
 import React, {useState, useEffect} from 'react'
 import ReportsTemplate from './ReportsTemplate';
 import { isToday } from 'date-fns'
-import { Modal, Button, Indicator } from '@mantine/core'
+import { Modal, Button, Indicator, MultiSelect } from '@mantine/core'
 import { DateRangePicker } from '@mantine/dates'
 import { getDonationsAndExpenses } from '../../../firebase/compoundRequests';
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import { ReportsPDFTemplate } from './ReportsPDFTemplate'
 import { useTranslation } from 'react-i18next';
+import { getDonationTypes } from '../../../firebase/donationRequests'
+import { getExpenseTypes } from '../../../firebase/expenseRequests'
 
 function DistrictReport(props) {
 	const { t } = useTranslation();
@@ -16,33 +18,30 @@ function DistrictReport(props) {
 	const [title, setTitle] = useState('')
 	const [dates, setDates] = useState('')
 	const [modalOpened, setModalOpened] = useState(true);
-	const [isAggregate, setIsAggregate] = useState(true)
-
+	const [donationType, setDonationType] = useState([]);
+	const [donationTypes, setDonationTypes] = useState([]);
+	const [expenseType, setExpenseType] = useState([]);
+	const [expenseTypes, setExpenseTypes] = useState([]);
+	
 	useEffect(() => {
+		getDonationTypes().then( data => {
+			setDonationTypes(data)
+		})
+		getExpenseTypes().then( data => {
+			setExpenseTypes(data)
+		})
 	}, [])
 	
 	const generateReport = () => {
-		setIsAggregate(true) //can remove this line, i added it just to remove the warning
 		setTitle(t('district_report_title_generated'))
-		if (isAggregate){
-			getDonationsAndExpenses(dates[0],dates[1]).then( data => {
-				setAggregateData(data.result)
-				setTotalDonations(data.donationTotal)
-				setTotalExpenses(data.expenseTotal)
-				setModalOpened(false)
-			})
-		} else {
-			// getDonations(dates[0] , dates[1]).then( data => {
-			// 	setDonationData(data.data)
-			// 	setTotalDonations(data.total)
-				
-			// })
-			// getExpenses(dates[0], dates[1]).then( data => {
-			// 	setExpenseData(data.data)
-			// 	setTotalExpenses(data.total)
-			// 	setModalOpened(false)
-			// })
-		}
+		
+		getDonationsAndExpenses(dates[0],dates[1], donationType, expenseType).then( data => {
+			setAggregateData(data.result)
+			setTotalDonations(data.donationTotal)
+			setTotalExpenses(data.expenseTotal)
+			setModalOpened(false)
+		})
+
 	}
 
 
@@ -81,22 +80,21 @@ function DistrictReport(props) {
 						onChange={(query) => setDates(query)}
 						value={dates}
 					/>
-					{/* <SegmentedControl 
-						value={isAggregate}
-						onChange={setIsAggregate}
-						data={[
-							{label:'All', value: false},
-							{label:'Aggregate', value: true},
-						]}
+				<section>
+				<MultiSelect 
+						data={donationTypes} 
+						label={t('filterby_donation_type')}
+						onChange={(query) => setDonationType(query)}
+						value={donationType}
 					/>
-					<SegmentedControl 
-						value={groupByWeek}
-						onChange={setGroupByWeek}
-						data={[
-							{label:'Day', value: false},
-							{label:'Week', value: true},
-						]}
-					/> */}
+					<MultiSelect 
+						data={expenseTypes} 
+						label={t('filterby_expense_type')}
+						onChange={(query) => setExpenseType(query)}
+						value={expenseType}
+					/> 
+					
+				</section>
 			</section>
 
 

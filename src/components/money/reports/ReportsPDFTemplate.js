@@ -5,6 +5,7 @@ import {Table, TableHeader, TableCell, TableBody, DataTableCell } from '@david.k
 import logo from '../../../assets/img/logo.png'
 import { useTranslation } from 'react-i18next';
 
+// const MAX_PER_PG = 35;
 const styles = StyleSheet.create({
 	page: {
 	  //flexDirection: 'row',
@@ -44,12 +45,26 @@ const styles = StyleSheet.create({
 	signName: {
 		width: '100%',
 		textAlign: 'center'
+	},
+	rowHeightLg: {
+		height: '20px'
+	},
+	table: {
+		margin: '15px 0'
 	}
   });
 
 	// Create Document Component
 	 export function ReportsPDFTemplate(props) {
 		const { t } = useTranslation();
+
+		const attendanceRows = [ 
+			{label: t('adults')}, 
+			{label: t('kids')}, 
+			{label: t('visitors')}, 
+			{label: t('converted')}, 
+			{label: t('communion')}, ]
+
 		return (
 		<Document>
 		  <Page size="A4" style={styles.page}>
@@ -62,36 +77,98 @@ const styles = StyleSheet.create({
 				<Text style={styles.title}>{props.title}</Text>
 				<Text style={styles.subtitle}>{format(props.dates[0], 'MM/dd/yyyy') + " - " + format(props.dates[1], 'MM/dd/yyyy')}</Text>
 			</View>
-			<Table data={props.data}>
+			<View style={styles.table}>
+				<Table data={props.data}>
                     <TableHeader textAlign={"center"}>
-                        {props.data.length > 0 && props.data[0].date && <TableCell weighting={0.45} >{t('date')}</TableCell>}
+                        {props.data.length > 0 && props.data[0].date && <TableCell >{t('date')}</TableCell>}
 						{props.data.length > 0 && props.data[0].dayOfWeek && <TableCell >{t('day')}</TableCell>}
                         {props.data.length > 0 && props.data[0].donor_name && <TableCell >{t('donor')}</TableCell>}
                         {props.data.length > 0 && props.data[0].donation_type && <TableCell>{t('type')}</TableCell>}
+						{props.data.length > 0 && props.data[0].source && <TableCell>{t('source')}</TableCell>}
 						{props.data.length > 0 && props.data[0].expense_type && <TableCell >{t('type')}</TableCell>}
+						{props.data.length > 0 && props.data[0].method && <TableCell >{t('method')}</TableCell>}
 						{props.isDistrictReport ? <TableCell>{t('income')}</TableCell> : props.data[0].amount && <TableCell >{t('amount')}</TableCell>}
 						{props.isDistrictReport && <TableCell>{t('expenses')}</TableCell>}
 						{props.isDistrictReport && <TableCell>{t('tithes')}</TableCell>}
 					</TableHeader>
                     <TableBody textAlign={"center"}>
-						{props.isDistrictReport ? <DataTableCell weighting={0.45} getContent={(r) => format(r.date, 'MM/dd/yyyy')}/>: props.data[0].date && <DataTableCell weighting={0.45} getContent={(r) => format(r.date.toDate(), 'MM/dd/yyyy')}/>}
+						{props.isDistrictReport ? <DataTableCell getContent={(r) => format(r.date, 'MM/dd/yyyy')}/>: props.data[0].date && <DataTableCell getContent={(r) => format(r.date.toDate(), 'MM/dd/yyyy')}/>}
 						{props.data.length > 0 && props.data[0].dayOfWeek && <DataTableCell getContent={(r) => r.dayOfWeek}/>}
 						{props.data.length > 0 && props.data[0].donor_name && <DataTableCell getContent={(r) => r.donor_name}/>}
 						{props.data.length > 0 && props.data[0].donation_type && <DataTableCell getContent={(r) => r.donation_type}/>}
+						{props.data.length > 0 && props.data[0].source && <DataTableCell getContent={(r) => r.source}/>}
 						{props.data.length > 0 && props.data[0].expense_type && <DataTableCell getContent={(r) => r.expense_type}/>}
+						{props.data.length > 0 && props.data[0].method && <DataTableCell getContent={(r) => r.method}/>}
 						{props.data[0].amount && <DataTableCell getContent={(r) => r.amount ? parseFloat(r.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD'}) : '$0.00'}/>}
 						{props.isDistrictReport && (props.data[0].income ? <DataTableCell getContent={(r) => r.income ? parseFloat(r.income).toLocaleString('en-US', { style: 'currency', currency: 'USD'}) : '$0.00'}/> : <DataTableCell getContent={() => '$0.00'}/>)}
 						{props.isDistrictReport && (props.data[0].expenses ? <DataTableCell getContent={(r) => r.expenses ? parseFloat(r.expenses).toLocaleString('en-US', { style: 'currency', currency: 'USD'}) : '$0.00'}/> : <DataTableCell getContent={() => '$0.00'}/>)}
 						{props.isDistrictReport && (props.data[0].income ? <DataTableCell getContent={(r) => r.income ? parseFloat(r.income).toLocaleString('en-US', { style: 'currency', currency: 'USD'}) : '$0.00'}/> : <DataTableCell getContent={() => '$0.00'}/>)}
                     </TableBody>
                 </Table>
+			</View>
+		  </Page>
+		  
+		  <Page size="A4" style={styles.page}>
+		  <View style={styles.table}>
+				<Text>{props.isExpense ? t('totals_by_expense_type') : t('totals_by_donation_type')}</Text>
+				<Table data={props.typeTotals}>
+					<TableBody>
+					<DataTableCell getContent={(r) => r.label} />
+					<DataTableCell getContent={(r) => r.value.toLocaleString('en-US', { style: 'currency', currency: 'USD'})} />
+					</TableBody>
+				</Table>
+			</View>
+			<View style={styles.table}>
+				<Text>{props.isExpense ? t('totals_by_method') : t('totals_by_source')}</Text>
+				<Table data={props.isExpense ? props.methodTotals : props.sourceTotals}>
+					<TableBody>
+					<DataTableCell getContent={(r) => r.label} />
+					<DataTableCell getContent={(r) => r.value.toLocaleString('en-US', { style: 'currency', currency: 'USD'})} />
+					</TableBody>
+				</Table>
+			</View>
+
+			<View style={styles.table}>
+				<Text>{t('attendance')}</Text>
+				<Table data={attendanceRows}>
+					<TableBody>
+						<DataTableCell style={styles.rowHeightLg} getContent={(r) => r.label} />
+						<DataTableCell getContent={(r) => ''} />
+					</TableBody>
+				</Table>
+			</View>
+
 			<View>
-				<Text>Total: {parseFloat(props.total).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</Text>
+				<Text>{props.isDistrictReport ? "Net: " : "Total: "} {parseFloat(props.total).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</Text>
+				<Text></Text>
 				{ props.isDistrictReport && <Text>Total ({t('income')}): {parseFloat(props.totalDonations).toLocaleString('en-US', { style: 'currency', currency: 'USD'})} </Text>}
 				{ props.isDistrictReport && <Text>Total ({t('expenses')}): {parseFloat(props.totalExpenses).toLocaleString('en-US', { style: 'currency', currency: 'USD'})} </Text>}
 				{ props.isDistrictReport && <Text>Total ({t('tithes')}): {(parseFloat(props.totalDonations) * .1).toLocaleString('en-US', { style: 'currency', currency: 'USD'})} </Text>}
 			</View>
 
+			{props.reportType === 'detailed' && 
+			<View style={styles.signSection}>
+				<View style={styles.signature}>
+					<Text style={styles.signName}>__________________</Text>
+					<Text style={styles.signName}>{t('counted_by')}</Text>
+				</View>
+				<View style={styles.signature}>
+					<Text style={styles.signName}>__________________</Text>
+					<Text style={styles.signName}>{t('counted_by')}</Text>
+				</View>
+			</View>}
+			{props.reportType === 'detailed' ? 
+			<View style={styles.signSection}>
+				<View style={styles.signature}>
+					<Text style={styles.signName}>__________________</Text>
+					<Text style={styles.signName}>{t('supervisor')}</Text>
+				</View>
+				<View style={styles.signature}>
+					<Text style={styles.signName}>__________________</Text>
+					<Text style={styles.signName}>{t('date')}</Text>
+				</View>
+			</View>
+			: 
 			<View style={styles.signSection}>
 				<View style={styles.signature}>
 					<Text style={styles.signName}>__________________</Text>
@@ -102,6 +179,8 @@ const styles = StyleSheet.create({
 					<Text style={styles.signName}>{t('secretary')}</Text>
 				</View>
 			</View>
+
+			}
 		  </Page>
 		</Document>
 	 )};

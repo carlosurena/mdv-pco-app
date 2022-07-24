@@ -2,7 +2,7 @@ import firebase from './firebase'
 import { format } from 'date-fns'
 import { getCookie } from '../utils/cookieUtils';
 
-export const getExpenses = async (startDate = null, endDate = null, type = null) => {
+export const getExpenses = async (startDate = null, endDate = null, options = {}) => {
 	let campusCode = getCookie('campus_code');
 	let db = firebase.firestore();
 	let expensesRef;
@@ -17,12 +17,17 @@ export const getExpenses = async (startDate = null, endDate = null, type = null)
 	if(campusCode != null){
 		expensesRef = expensesRef.where('campus_code', '==', campusCode);
 	}
-	if(type != null && type.length > 0){
-		expensesRef = expensesRef.where('expense_type', 'in', type);
+	if(options.type != null && options.type.length > 0){
+		expensesRef = expensesRef.where('expense_type', 'in', options.type);
+	}
+	if(options.method != null && options.method.length > 0){
+		expensesRef = expensesRef.where('method', 'in', options.method);
 	}
 	expensesRef = expensesRef.orderBy('date', 'desc');
 
 	return expensesRef.get().then(expenses => {
+		let typetotals = {}
+		let methodtotals = {}
 		console.log(expenses)
 		var data = expenses.docs.map(doc => {
 			return {
@@ -30,10 +35,20 @@ export const getExpenses = async (startDate = null, endDate = null, type = null)
 				id: doc.id
 			}
 		})
-		data.forEach( expenses => {
-			total += expenses.amount
+		data.forEach( expense => {
+			total += expense.amount
+			if(typetotals[expense.expense_type]){
+				typetotals[expense.expense_type] += expense.amount;
+			} else {
+				typetotals[expense.expense_type] = expense.amount;
+			}
+			if(methodtotals[expense.method]){
+				methodtotals[expense.method] += expense.amount;
+			} else {
+				methodtotals[expense.method] = expense.amount;
+			}
 		})
-		return {total, data }
+		return {typetotals, methodtotals, total, data }
 	}).catch((err) => {
 		console.log("there's been an error getting expenses", err)
 
@@ -122,6 +137,25 @@ export const createExpenseMethod = (em, user) => {
 export const deleteExpense = async (id) => {
 	let db = firebase.firestore();
 	id && db.collection('expenses').doc(id).delete().then(() => {
+		console.log("success DELETE!")
+	}).catch( (err) => {
+		console.log("failure!", err)
+	});
+}
+
+
+export const deleteExpenseType = async (id) => {
+	let db = firebase.firestore();
+	id && db.collection('expense_types').doc(id).delete().then(() => {
+		console.log("success DELETE!")
+	}).catch( (err) => {
+		console.log("failure!", err)
+	});
+}
+
+export const deleteExpenseMethod = async (id) => {
+	let db = firebase.firestore();
+	id && db.collection('expense_methods').doc(id).delete().then(() => {
 		console.log("success DELETE!")
 	}).catch( (err) => {
 		console.log("failure!", err)
@@ -248,7 +282,7 @@ export const getExpenseTotalsAggregate = async (startDate = null, endDate = null
 	})
 }
 
-export const getExpenseTotalsAggregateByDate = async (startDate = null, endDate = null) => {
+export const getExpenseTotalsAggregateByDate = async (startDate = null, endDate = null, filterByType = null) => {
 	let db = firebase.firestore();
 	let campusCode = getCookie("campus_code");
 
@@ -256,7 +290,10 @@ export const getExpenseTotalsAggregateByDate = async (startDate = null, endDate 
 		.where('date', '>=', startDate)
 		.where('date','<=',endDate)
 		.where('campus_code', '==', campusCode);
-
+	
+	if (filterByType != null && filterByType.length > 0) {
+		expensesRef = expensesRef.where('expense_type', 'in', filterByType)
+	}
 	let total = 0;
 	return expensesRef.get().then( expenses => {
 		var dbData = expenses.docs.map(doc => {

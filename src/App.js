@@ -12,6 +12,7 @@ import DonationsPage from './components/money/DonationsPage';
 import { checkCookie, deleteCookie } from './utils/cookieUtils';
 import { getCurrentUserData, getOauthRedirectURL, getAuthToken } from './pco/requests';
 import { LogOutPage } from './components/auth/authStates'
+import SettingsPage from './components/money/SettingsPage';
 
 function App() {
 	const auth = useProvideAuth();
@@ -38,6 +39,7 @@ function App() {
 						<PrivateRoute exact path="/donations" component={() => <DonationsPage auth={auth} />} />
 						<PrivateRoute exact path="/expenses" component={() => <ExpensesPage auth={auth} />} />
 						<PrivateRoute exact path="/reports" component={() => <FinancialReportsPage auth={auth} />} />
+						<PrivateRoute exact path="/settings" component={() => <SettingsPage auth={auth} />} />
 						<PrivateRoute path="/people/:person_id" component={() => <Person auth={auth} />} />
 					</Switch>
 				</AppShell> :

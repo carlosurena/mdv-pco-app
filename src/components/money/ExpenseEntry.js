@@ -7,6 +7,7 @@ import MDVNumberInput from '../shared/MDVNumberInput';
 import { isToday } from 'date-fns'
 import { useTranslation } from 'react-i18next';
 import { getCookie } from '../../utils/cookieUtils';
+import ConfirmationModal from '../shared/ConfirmationModal';
 
 function ExpenseEntry(props) {
 	const { t } = useTranslation();
@@ -14,7 +15,9 @@ function ExpenseEntry(props) {
 	const [method, setMethod] = useState('');
 	const [date, setDate] = useState('');
 	const [amount, setAmount] = useState('');
-
+	const [isConfirmationModal, setIsConfirmationModal] = useState(false)
+	const [createVal, setCreateVal] = useState('')
+	const [createFunc, setCreateFunc] = useState(undefined)
 
 	const transferValue = (event) => {
 	  event.preventDefault();
@@ -38,17 +41,28 @@ function ExpenseEntry(props) {
 	};
 
 	const _createNewExpenseType = (query) => {
-		console.log('creating new', query)
-		createExpenseType(query, props.user);
+		setCreateVal(query)
+		setCreateFunc(() => createExpenseType)
+		setIsConfirmationModal(true)
 	}
 	const _createNewExpenseMethod = (query) => {
-		console.log('creating new', query)
-		createExpenseMethod(query, props.user);
+		setCreateVal(query)
+		setCreateFunc(() => createExpenseMethod)
+		setIsConfirmationModal(true)
 	}
-	
+	const confirmCreate = () => {
+		createFunc(createVal, props.user)
+		setIsConfirmationModal(false)
+	}
 	
 	return (
 	  <section>
+		<ConfirmationModal 
+				opened={isConfirmationModal}
+				setOpened={setIsConfirmationModal}
+				confirmCreate={confirmCreate}
+				createVal={createVal}
+			/>
 		<h1>{t('expenses')}</h1>
 		  {props.people && 
 		  	<Grid align='flex-end'>

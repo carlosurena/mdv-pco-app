@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { NavLink } from 'react-router-dom' 
 import {Navbar, UnstyledButton, Avatar, Text, Group, Box, Image, Popover, Button, Select } from '@mantine/core'
-import { TrendingDown, TrendingUp, ReportAnalytics, ChevronRight, ExternalLink} from 'tabler-icons-react'
+import { TrendingDown, Settings, TrendingUp, ReportAnalytics, ChevronRight, ExternalLink} from 'tabler-icons-react'
 import logo from '../../assets/img/logo.png';
 import { useTranslation } from 'react-i18next';
 import { setCookie, getCookie, checkCookie } from '../../utils/cookieUtils'
@@ -36,14 +36,16 @@ function NavigationBar(props) {
 			} else {
 				setCampus(data[0])
 				setCookie("campus_code", data[0].value)
+				history.go(0);
 			}
 		});
+	// eslint-disable-next-line
 	}, [])
 
 	const changeCampus = (q) => {
 		setCampus(campuses.find( c => c.value === q))
 		setCookie("campus_code", q)
-		history.go(0)
+		history.go(0);
 	}
 
     return (
@@ -84,6 +86,18 @@ function NavigationBar(props) {
 								<Avatar size={30} color="blue"><ReportAnalytics size={20}/></Avatar>
 								<div>
 									<Text color="blue">{t('reports')}</Text>
+								</div>
+							</Group>
+						</UnstyledButton>
+					</NavLink>
+				</div>
+				<div className="nav-link">
+					<NavLink to="/settings">
+						<UnstyledButton >
+							<Group>
+								<Avatar size={30} color="gray"><Settings size={20}/></Avatar>
+								<div>
+									<Text color="gray">{t('settings')}</Text>
 								</div>
 							</Group>
 						</UnstyledButton>

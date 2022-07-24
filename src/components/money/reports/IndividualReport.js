@@ -2,12 +2,13 @@ import React, {useState, useEffect} from 'react'
 import { getDonationsByDateAndPerson } from '../../../firebase/donationRequests'
 import ReportsTemplate from './ReportsTemplate';
 import { isToday } from 'date-fns'
-import { Modal, MultiSelect, Button, Indicator} from '@mantine/core'
+import { Modal, Button, Indicator} from '@mantine/core'
 import { DateRangePicker } from '@mantine/dates'
 import { getAllPeopleReshaped } from '../../../pco/requests'
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import { ReportsPDFTemplate } from './ReportsPDFTemplate'
 import { useTranslation } from 'react-i18next';
+import MDVMultiSelect from '../../shared/MDVMultiSelect';
 
 function IndividualReport(props) {
 	const { t } = useTranslation();
@@ -43,6 +44,7 @@ function IndividualReport(props) {
 		setModalOpened(false)
 		props.setPage(null)
 	}
+
 	return (
 		<div>
 			<Modal 
@@ -51,12 +53,14 @@ function IndividualReport(props) {
 				title={t('individual_report_title')}
 			>
 				<section>
-					<MultiSelect
+					<MDVMultiSelect
 						data={people}
 						label={t('donor')}
 						value={ids}
 						maxSelectedValues={5}
-						onChange={(query) => setIds(query)}
+						searchable
+						setValue={setIds}
+						labelLookupRequired
 					/>
 					<DateRangePicker 
 						placeholder={t('pick_date')}

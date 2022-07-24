@@ -1,7 +1,7 @@
 import firebase from './firebase'
 import { format } from 'date-fns';
 import { getCookie } from '../utils/cookieUtils';
-export const getDonations = async (startDate = null, endDate = null, types = null) => {
+export const getDonations = async (startDate = null, endDate = null, options = {}) => {
 	let db = firebase.firestore();
 	let campusCode = getCookie('campus_code');
 	let donationsRef;
@@ -16,13 +16,19 @@ export const getDonations = async (startDate = null, endDate = null, types = nul
 	if(campusCode != null){
 		donationsRef = donationsRef.where('campus_code', '==', campusCode);
 	}
-	if(types != null && types.length > 0){
-		console.log(types)
-		donationsRef = donationsRef.where('donation_type', 'in', types);
+	if(options.types != null && options.types.length > 0){
+		console.log(options.types)
+		donationsRef = donationsRef.where('donation_type', 'in', options.types);
+	}
+	if(options.sources != null && options.sources.length > 0){
+		console.log(options.sources)
+		donationsRef = donationsRef.where('source', 'in', options.sources);
 	}
 	donationsRef = donationsRef.orderBy('date', 'desc');
 
 	return donationsRef.get().then(donations => {
+		let typetotals = {}
+		let sourcetotals = {};
 		var data = donations.docs.map(doc => {
 			return {
 				...doc.data(),
@@ -31,8 +37,18 @@ export const getDonations = async (startDate = null, endDate = null, types = nul
 		})
 		data.forEach( donation => {
 			total += donation.amount
+			if(typetotals[donation.donation_type]){
+				typetotals[donation.donation_type] += donation.amount;
+			} else {
+				typetotals[donation.donation_type] = donation.amount;
+			}
+			if(sourcetotals[donation.source]){
+				sourcetotals[donation.source] += donation.amount;
+			} else {
+				sourcetotals[donation.source] = donation.amount;
+			}
 		})
-		return {total, data }
+		return {typetotals, sourcetotals, total, data }
 	}).catch((err) => {
 		console.log("there's been an error getting donations", err)
 
@@ -85,6 +101,7 @@ export const createDonation = (donation, user) => {
 
 export const createDonationType = (dt, user) => {
 	let db = firebase.firestore();
+	console.log(dt,user)
 	let donationsRef = db.collection('donation_types');
 	donationsRef.add({
 		name: dt,
@@ -103,6 +120,7 @@ export const createDonationType = (dt, user) => {
 
 export const createDonationSource = (ds, user) => {
 	let db = firebase.firestore();
+	console.log(ds,user)
 	let donationsRef = db.collection('donation_sources');
 	donationsRef.add({
 		name: ds,
@@ -127,6 +145,25 @@ export const deleteDonation = async (id) => {
 		console.log("failure!", err)
 	});
 }
+
+export const deleteDonationType = async (id) => {
+	let db = firebase.firestore();
+	id && db.collection('donation_types').doc(id).delete().then(() => {
+		console.log("success DELETE!")
+	}).catch( (err) => {
+		console.log("failure!", err)
+	});
+}
+
+export const deleteDonationSource = async (id) => {
+	let db = firebase.firestore();
+	id && db.collection('donation_sources').doc(id).delete().then(() => {
+		console.log("success DELETE!")
+	}).catch( (err) => {
+		console.log("failure!", err)
+	});
+}
+
 
 export const updateDonation = async (id, data, user) => {
 	let db = firebase.firestore();
@@ -249,7 +286,7 @@ export const getDonationTotalsAggregate = async (startDate = null, endDate = nul
 	})
 }
 
-export const getDonationTotalsAggregateByDate = async (startDate = null, endDate = null) => {
+export const getDonationTotalsAggregateByDate = async (startDate = null, endDate = null, filterByType = null) => {
 	let db = firebase.firestore();
 	let campusCode = getCookie("campus_code");
 
@@ -257,7 +294,9 @@ export const getDonationTotalsAggregateByDate = async (startDate = null, endDate
 		.where('date', '>=', startDate)
 		.where('date','<=',endDate)
 		.where('campus_code','==', campusCode);
-	
+	if (filterByType != null && filterByType.length > 0) {
+		donationsRef = donationsRef.where('donation_type', 'in', filterByType)
+	}
 	let total = 0;
 	return donationsRef.get().then( donations => {
 		var dbData = donations.docs.map(doc => {

@@ -182,3 +182,26 @@ export const createPerson = async (data) => {
 		console.error(error);
 	  });
 }
+
+export const getAllMembershipTypes = async (data) => {
+	if (checkCookie('jwt')){
+		let jwt = getCookie('jwt')
+		return await axios.post('.netlify/functions/getStats', {jwt}).then( response => {
+			let data = [];
+			response.data.data.attributes.membership.forEach( mem => {
+				let label = mem.name;
+				data.push(label)
+
+			});
+			return data;
+		}).catch( err => {
+			console.error(err)
+			console.log('pco error, probably expired token')
+			return null
+		})
+
+	}else {
+		console.log('no cookie set, cant make call')
+		return null
+	}
+}

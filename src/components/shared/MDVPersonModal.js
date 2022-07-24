@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import { Modal, Button, Group, TextInput, Chips, Chip } from '@mantine/core';
+import { Modal, Button, Group, TextInput, Chips, Chip, Select } from '@mantine/core';
 import { useTranslation} from 'react-i18next';
-import { createPerson } from '../../pco/requests';
+import { createPerson, getAllMembershipTypes } from '../../pco/requests';
 import { getCookie } from '../../utils/cookieUtils';
 
 function MDVPersonModal(props) {
@@ -9,9 +9,14 @@ function MDVPersonModal(props) {
 	const [first, setFirst] = useState(props.person)
 	const [last, setLast] = useState('')
 	const [gender, setGender] = useState('')
+	const [membership, setMembership] = useState('')
+	const [membershipTypes, setMembershipTypes] = useState([])
 
 	useEffect(() => {
 		setFirst(props.person)
+		getAllMembershipTypes().then( res => {
+			setMembershipTypes(res)
+		})
 	}, [props.person])
 
 	const handleSubmit = () => {
@@ -20,6 +25,7 @@ function MDVPersonModal(props) {
 			last_name : last,
 			gender,
 			campus_code: getCookie('campus_code'),
+			membership,
 			jwt : getCookie('jwt')
 		}
 		createPerson(data).then( res => {
@@ -65,6 +71,13 @@ function MDVPersonModal(props) {
 							<Chip value={'M'}>{t('male')}</Chip>
 							<Chip value={'F'}>{t('female')}</Chip>
 						</Chips>
+						<Select
+							data={membershipTypes}
+							onChange={(q) => setMembership(q)}
+							searchable
+							value={membership}
+							label={t('membership_type')}
+						/>
 					</Group>
 				</section>
 					

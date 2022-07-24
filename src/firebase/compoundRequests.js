@@ -1,10 +1,10 @@
 import { getDonationTotalsAggregateByDate } from './donationRequests'
 import { getExpenseTotalsAggregateByDate } from './expenseRequests'
 import { parse, format } from 'date-fns'
-export const getDonationsAndExpenses = async (startDate = null, endDate = null) => {
-
-	return getDonationTotalsAggregateByDate(startDate, endDate).then( donations => {
-		return getExpenseTotalsAggregateByDate(startDate, endDate).then(expenses => {
+export const getDonationsAndExpenses = async (startDate = null, endDate = null, donationTypes = null, expenseTypes = null) => {
+//can improve upon this strucvture by using this: https://stackoverflow.com/questions/35612428/call-async-await-functions-in-parallel
+	return getDonationTotalsAggregateByDate(startDate, endDate, donationTypes).then( donations => {
+		return getExpenseTotalsAggregateByDate(startDate, endDate, expenseTypes).then(expenses => {
 			console.log({donations, expenses})
 			let jointArray = [...donations.data, ...expenses.data]
 			let dateObj = groupBy(jointArray, 'date')

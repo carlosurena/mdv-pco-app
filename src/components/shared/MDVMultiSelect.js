@@ -1,36 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MultiSelect } from '@mantine/core';
-import { getPersonByID } from '../../pco/requests';
+import { searchPeopleByName } from '../../pco/requests';
 
 function MDVMultiSelect(props) {
- 
+	const [data, setData] = useState([])
+	
+	useEffect(()=> {
+		setData(props.data)
+	},[props.data])
 
-	const changeValue = (val) => {
-
-		if (props.labelLookupRequired){
-			(val && val.length > 0) ? getPersonByID(val[0]).then( person => {
-				// for Persons
-				let name = (person.attributes.first_name ? person.attributes.first_name : '' ) + 
-					(person.attributes.middle_name ? ' ' + person.attributes.middle_name : '') + 
-					(person.attributes.last_name ? ' ' + person.attributes.last_name : '');
-					props.updateLabelName(name)
-			}).catch( err => {
-				props.updateLabelName('')
-			}) : props.updateLabelName('')	
+	const unique = (arr) => {
+		var a = arr.concat();
+		for(var i=0; i<a.length; ++i) {
+			for(var j=i+1; j<a.length; ++j) {
+				if(a[i].value === a[j].value)
+					a.splice(j--, 1);
+			}
 		}
-		console.log('setting val to ', val)
-		props.setValue(val)
+	
+		return a;
+	};
+
+	const handleSearchChange = (val) => {
+		searchPeopleByName(val).then( res => {
+			let r = unique(res.concat(data))
+			setData(r)
+		})
+		// changeValue(val)
 	}
+
+	const changeValue = (vals) => {
+		props.setValue(vals)
+}
 
 	return (
 		<MultiSelect 
-			data={props.data} 
+			data={data} 
 			label={props.label}
 			maxSelectedValues={props.maxSelectedValues}
 			searchable
 			creatable
-			getCreateLabel={(query) => `+ Create ${query}`}
-			onCreate={(query) => props.createNewOption(query)}
+			limit={20}
+			// getCreateLabel={(query) => `+ Create ${query}`}
+			// onCreate={(query) => props.createNewOption(query)}
+			onSearchChange={(q) => handleSearchChange(q)}
 			onChange={(query) => changeValue(query)}
 			value={props.value}
 			maxDropdownHeight={160}

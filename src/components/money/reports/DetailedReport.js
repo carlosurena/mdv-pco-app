@@ -4,13 +4,13 @@ import ReportsTemplate from './ReportsTemplate';
 import { isToday } from 'date-fns'
 import { Modal, Button, Switch, Indicator, MultiSelect, SegmentedControl } from '@mantine/core'
 import { DateRangePicker } from '@mantine/dates'
-import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
+import { PDFViewer } from '@react-pdf/renderer';
 import { ReportsPDFTemplate } from './ReportsPDFTemplate'
 import { useTranslation } from 'react-i18next';
 import { getExpenses, getExpenseTotalsAggregate, getExpenseTypes } from '../../../firebase/expenseRequests';
 
 	  
-function GeneralReport(props) {
+function DetailedReport(props) {
 	const { t } = useTranslation();
 	const [donationData, setDonationData] = useState([]);
 	const [donationType, setDonationType] = useState();
@@ -24,7 +24,10 @@ function GeneralReport(props) {
 	const [title, setTitle] = useState('')
 	const [isAggregate, setIsAggregate] = useState(false)
 	const [isExpense, setIsExpense] = useState(false)
-
+	const [typeTotals, setTypeTotals] = useState([]);
+	const [sourceTotals, setSourceTotals] = useState([]);
+	const [methodTotals, setMethodTotals] = useState([]);
+	const [isLoading, setIsLoading] = useState(false)
 	useEffect(() => {
 		getDonationTypes().then( data => {
 			setDonationTypes(data)
@@ -33,21 +36,25 @@ function GeneralReport(props) {
 			setExpenseTypes(data)
 		})
 	}, [])
+
 	
 	const generateReport = () => {
-		setTitle(t('general_report_title_generated'))
+		setIsLoading(true)
+		setTitle(t('detailed_report_title_generated'))
 		if (isAggregate){
 			if(isExpense) {
 				getExpenseTotalsAggregate(dates[0], dates[1], expenseType).then( data => {
 					setExpenseData(data.data)
 					setTotal(data.total)
 					setModalOpened(false)
+					setIsLoading(false)
 				})
 			}else {
 				getDonationTotalsAggregate(dates[0], dates[1], donationType).then( data => {
 					setDonationData(data.data)
 					setTotal(data.total)
 					setModalOpened(false)
+					setIsLoading(false)
 				})
 			}
 		} else {
@@ -56,29 +63,41 @@ function GeneralReport(props) {
 					console.log(data)
 					setExpenseData(data.data);
 					setTotal(data.total);
+					setTypeTotals(convertToArray(data.typetotals))
+					setMethodTotals(convertToArray(data.methodtotals))
 					setModalOpened(false);
+					setIsLoading(false)
 				})
 
 			} else {
-				getDonations(dates[0] , dates[1], {types: donationType}).then( data => {
+				getDonations(dates[0] , dates[1], {types : donationType}).then( data => {
 					setDonationData(data.data)
 					setTotal(data.total)
+					setTypeTotals(convertToArray(data.typetotals))
+					setSourceTotals(convertToArray(data.sourcetotals))
 					setModalOpened(false)
+					setIsLoading(false)
 				})
 			}
 			
 		}
 	}
+
 	const handleModalClose = () => {
 		setModalOpened(false)
 		props.setPage(null)
 	}
+
+	const convertToArray = (obj) => {
+		return Object.keys(obj).map( key => { return {label: key, value: obj[key]} } )
+	}
+	
 	return (
 		<div>
 			<Modal 
 				opened={modalOpened}
 				onClose={handleModalClose}
-				title={t('general_report_title')}
+				title={t('detailed_report_title')}
 			>
 				<section className='centered-control'>
 					<SegmentedControl 
@@ -136,29 +155,39 @@ function GeneralReport(props) {
 			<Button disabled={!(dates && dates[0] !== null && dates[1] !== null)} onClick={() => generateReport()}>{t('generate_report')}</Button>
 			</Modal>
 		
+			{ isLoading ? ('loading...') : (
+				((donationData && donationData.length > 0) || (expenseData && expenseData.length > 0)) ? (
+					<div>
+						
+						<ReportsTemplate 
+							title={title} 
+							data={isExpense ? expenseData : donationData }
+							total={total}
+						/>
+						<PDFViewer className='pdf-viewer'>
+							<ReportsPDFTemplate 
+								reportType='detailed' 
+								title={title} 
+								dates={dates} 
+								data={isExpense ? expenseData : donationData} 
+								total={total} 
+								typeTotals={typeTotals} 
+								isExpense={isExpense}
+								sourceTotals={sourceTotals} 
+								methodTotals={methodTotals}/>
+						</PDFViewer>
+					</div>
+				) : (
+					<div>
+					</div>
+				)
 
-		{((donationData && donationData.length > 0) || (expenseData && expenseData.length > 0)) ? (
-			<div>
-				<ReportsTemplate 
-					title={title} 
-					data={isExpense ? expenseData : donationData }
-					total={total}
-				/>
-				<PDFViewer className='pdf-viewer'>
-					<ReportsPDFTemplate title={title} dates={dates} data={isExpense ? expenseData : donationData} total={total}/>
-				</PDFViewer>
-				<PDFDownloadLink document={<ReportsPDFTemplate title={title} dates={dates} data={isExpense ? expenseData : donationData} total={total}/>} fileName="test">
-					{({loading}) => loading ? (<Button disabled>{t('loading')}</Button>) : (<Button>{t('download')}</Button>)}
-				</PDFDownloadLink>
-			</div>
-		) : (
-			<div>
-			</div>
-		)}
+			)}
+		
 		
 			
 		</div>
 	)
 
 }
-export default GeneralReport
+export default DetailedReport

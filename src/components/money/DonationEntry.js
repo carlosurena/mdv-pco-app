@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { Grid, Button, Indicator } from '@mantine/core'
+import { Grid, Button, Indicator} from '@mantine/core'
 import {DatePicker} from '@mantine/dates';
 import { createDonation, createDonationSource, createDonationType } from '../../firebase/donationRequests';
 import MDVSelect from '../shared/MDVSelect';
@@ -9,6 +9,7 @@ import { isToday } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { getCookie } from '../../utils/cookieUtils'
 import MDVPersonModal from '../shared/MDVPersonModal';
+import ConfirmationModal from '../shared/ConfirmationModal';
 
 function DonationEntry(props) {
 	const { t } = useTranslation();
@@ -20,6 +21,9 @@ function DonationEntry(props) {
 	const [amount, setAmount] = useState('');
 	const [pModalOpened, setPModalOpened] = useState(false)
 	const [tempNewPersonName, setTempNewPersonName] = useState('')
+	const [isConfirmationModal, setIsConfirmationModal] = useState(false)
+	const [createVal, setCreateVal] = useState('')
+	const [createFunc, setCreateFunc] = useState(undefined)
 	const transferValue = (event) => {
 	  event.preventDefault();
 
@@ -47,12 +51,23 @@ function DonationEntry(props) {
 
 	const _createNewDonationType = (query) => {
 		console.log('creating new', query)
-		createDonationType(query, props.user);
+		setCreateVal(query)
+		setCreateFunc(() => createDonationType)
+		setIsConfirmationModal(true)
+		// createDonationType(query, props.user);
 	}
 
 	const _createNewSource = (query) => {
 		console.log('creating new ', query)
-		createDonationSource(query, props.user)
+		setCreateVal(query)
+		setCreateFunc(() => createDonationSource)
+		setIsConfirmationModal(true)
+		// createDonationSource(query, props.user)
+	}
+
+	const confirmCreate = () => {
+		createFunc(createVal, props.user)
+		setIsConfirmationModal(false)
 	}
 
 	const _createNewPerson = (query) => {
@@ -65,6 +80,12 @@ function DonationEntry(props) {
 	return (
 		<section>
 			<MDVPersonModal person={tempNewPersonName} opened={pModalOpened} setOpened={setPModalOpened}/>
+			<ConfirmationModal 
+				opened={isConfirmationModal}
+				setOpened={setIsConfirmationModal}
+				confirmCreate={confirmCreate}
+				createVal={createVal}
+			/>
 			<h1>{t('donations')}</h1>
 		  {props.people && 
 		  	<Grid align='flex-end'>

@@ -12,7 +12,7 @@ exports.handler = async (event) => {
   	
 	console.log('******CREATE PERSON*****')
 	console.log(event.body)
-	const { jwt, first_name, last_name, campus_code, gender } = JSON.parse(event.body)
+	const { jwt, first_name, last_name, campus_code, gender, membership } = JSON.parse(event.body)
 	let url = `${process.env.PCO_API_URL}people/v2/people`;
 	console.log(url, jwt, gender, campus_code)
 
@@ -23,7 +23,8 @@ exports.handler = async (event) => {
 		  "attributes": {
 			"first_name": first_name,
 			"last_name": last_name,
-			"gender": gender
+			"gender": gender,
+			"membership": membership
 		  },
 		  "relationships": {
 			"primary_campus": {
