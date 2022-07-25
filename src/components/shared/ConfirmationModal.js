@@ -12,14 +12,14 @@ function ConfirmationModal(props) {
 			centered
 			padding="lg"
 		>
-			<Text weight={700} align='center'>{t('are_you_sure_create')}</Text>
+			<Text weight={700} align='center'>{props.text}</Text>
 			<Space h="lg"/>
 			<Grid justify={"center"}>
 				<Grid.Col span={3}>				
 					<Button color="red" onClick={() => props.setOpened(false)}>{t('cancel')}</Button>
 				</Grid.Col>
 				<Grid.Col span={3}>
-					<Button onClick={() => props.confirmCreate()} color="teal">{t('create', {query : props.createVal})}</Button>
+					<Button onClick={() => props.confirmFunction()} color="teal">{props.confirmText}</Button>
 				</Grid.Col>
 			</Grid>
 		</Modal>

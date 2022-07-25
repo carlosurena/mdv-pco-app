@@ -83,8 +83,9 @@ function DonationEntry(props) {
 			<ConfirmationModal 
 				opened={isConfirmationModal}
 				setOpened={setIsConfirmationModal}
-				confirmCreate={confirmCreate}
-				createVal={createVal}
+				confirmFunction={confirmCreate}
+				text={t('are_you_sure_create')}
+				confirmText={t('create', {query : createVal})}
 			/>
 			<h1>{t('donations')}</h1>
 		  {props.people && 

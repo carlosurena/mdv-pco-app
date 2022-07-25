@@ -5,6 +5,8 @@ import { List as ListIcon, Settings, TrashX } from 'tabler-icons-react';
 import firebase from '../../firebase/firebase';
 import { deleteDonationSource, deleteDonationType } from '../../firebase/donationRequests';
 import { deleteExpenseMethod, deleteExpenseType } from '../../firebase/expenseRequests';
+import ConfirmationModal from '../shared/ConfirmationModal';
+
 const db = firebase.firestore();
 
 function SettingsPage(props) {
@@ -13,7 +15,8 @@ function SettingsPage(props) {
 	const [ds, setDS] = useState([]);
 	const [et, setET] = useState([]);
 	const [em, setEM] = useState([]);
-	
+	const [itemToDelete, setItemoDelete] = useState('')
+	const [isConfirmationModal, setIsConfirmationModal] = useState(false)
 
 	useEffect( () => {
 		const unsubscribeSources = db.collection('donation_sources').onSnapshot(snap => {
@@ -65,28 +68,40 @@ function SettingsPage(props) {
 		}	
 	}, [])
 
-	const handleItemDelete = (itemType, id) => {
-		switch(itemType) {
+	const handleItemDelete = (type, id) => {
+		setItemoDelete({type, id})
+		setIsConfirmationModal(true);
+	}
+
+	const deleteItems = () => {
+		switch(itemToDelete.type) {
 			case 'dt':
-				deleteDonationType(id);
+				deleteDonationType(itemToDelete.id);
 				break;
 			case 'ds':
-				deleteDonationSource(id);
+				deleteDonationSource(itemToDelete.id);
 				break;
 			case 'et':
-				deleteExpenseType(id);
+				deleteExpenseType(itemToDelete.id);
 				break;
 			case 'em':
-				deleteExpenseMethod(id);
+				deleteExpenseMethod(itemToDelete.id);
 				break;
 			default:
 				console.log('WRONG item type');
 				break;
-
 		}
+		setIsConfirmationModal(false)
 	}
 	return (
 		<div>
+			<ConfirmationModal 
+				opened={isConfirmationModal}
+				setOpened={setIsConfirmationModal}
+				confirmFunction={() => deleteItems()}
+				text={t('are_you_sure_delete')}
+				confirmText={t('delete_row')}
+			/>
 			<h1>{t('settings')}</h1>
 			<Tabs>
 				<Tabs.Tab label={t('delete_options')} icon={<ListIcon size={14} />}>

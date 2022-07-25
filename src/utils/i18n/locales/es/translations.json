@@ -67,5 +67,9 @@
 	"supervisor": "Supervisor",
 	"totals_by_method": "Totales por Método de Pago",
 	"coming_soon": "Muy Pronto",
-	"delete_options": "Borrador"
+	"delete_options": "Borrador",
+	"are_you_sure_delete": "Estas seguro que quieres borrar esto?",
+	"delete_row": "Borrar linea",
+	"total_tithes_offerings": "Total (solo Diezmos y Ofrendas)"
+
 }

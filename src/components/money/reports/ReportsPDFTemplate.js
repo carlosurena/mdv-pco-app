@@ -65,6 +65,19 @@ const styles = StyleSheet.create({
 			{label: t('converted')}, 
 			{label: t('communion')}, ]
 
+		const getTotalTithesOfferings = ()  => {
+			let total = 0
+			props.typeTotals && props.typeTotals.forEach( type => {
+				if (type.label === 'Diezmo' || type.label === 'Ofrendas'){
+					total += type.value
+				}
+			})
+			return total
+		}
+
+		const formatToCurrency = (num) => {
+			return num.toLocaleString('en-US', { style: 'currency', currency: 'USD'})
+		}
 		return (
 		<Document>
 		  <Page size="A4" style={styles.page}>
@@ -99,16 +112,19 @@ const styles = StyleSheet.create({
 						{props.data.length > 0 && props.data[0].source && <DataTableCell getContent={(r) => r.source}/>}
 						{props.data.length > 0 && props.data[0].expense_type && <DataTableCell getContent={(r) => r.expense_type}/>}
 						{props.data.length > 0 && props.data[0].method && <DataTableCell getContent={(r) => r.method}/>}
-						{props.data[0].amount && <DataTableCell getContent={(r) => r.amount ? parseFloat(r.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD'}) : '$0.00'}/>}
-						{props.isDistrictReport && (props.data[0].income ? <DataTableCell getContent={(r) => r.income ? parseFloat(r.income).toLocaleString('en-US', { style: 'currency', currency: 'USD'}) : '$0.00'}/> : <DataTableCell getContent={() => '$0.00'}/>)}
-						{props.isDistrictReport && (props.data[0].expenses ? <DataTableCell getContent={(r) => r.expenses ? parseFloat(r.expenses).toLocaleString('en-US', { style: 'currency', currency: 'USD'}) : '$0.00'}/> : <DataTableCell getContent={() => '$0.00'}/>)}
-						{props.isDistrictReport && (props.data[0].income ? <DataTableCell getContent={(r) => r.income ? parseFloat(r.income).toLocaleString('en-US', { style: 'currency', currency: 'USD'}) : '$0.00'}/> : <DataTableCell getContent={() => '$0.00'}/>)}
+						{props.data[0].amount && <DataTableCell getContent={(r) => r.amount ? formatToCurrency(parseFloat(r.amount)): '$0.00'}/>}
+						{props.isDistrictReport && (props.data[0].income ? <DataTableCell getContent={(r) => r.income ? formatToCurrency(parseFloat(r.income)) : '$0.00'}/> : <DataTableCell getContent={() => '$0.00'}/>)}
+						{props.isDistrictReport && (props.data[0].expenses ? <DataTableCell getContent={(r) => r.expenses ? formatToCurrency(parseFloat(r.expenses)) : '$0.00'}/> : <DataTableCell getContent={() => '$0.00'}/>)}
+						{props.isDistrictReport && (props.data[0].income ? <DataTableCell getContent={(r) => r.income ? formatToCurrency(parseFloat(r.income)) : '$0.00'}/> : <DataTableCell getContent={() => '$0.00'}/>)}
                     </TableBody>
                 </Table>
 			</View>
 		  </Page>
 		  
 		  <Page size="A4" style={styles.page}>
+			<View>
+				<Text>Breakdown</Text>
+			</View>
 		  <View style={styles.table}>
 				<Text>{props.isExpense ? t('totals_by_expense_type') : t('totals_by_donation_type')}</Text>
 				<Table data={props.typeTotals}>
@@ -139,11 +155,12 @@ const styles = StyleSheet.create({
 			</View>
 
 			<View>
-				<Text>{props.isDistrictReport ? "Net: " : "Total: "} {parseFloat(props.total).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</Text>
-				<Text></Text>
-				{ props.isDistrictReport && <Text>Total ({t('income')}): {parseFloat(props.totalDonations).toLocaleString('en-US', { style: 'currency', currency: 'USD'})} </Text>}
-				{ props.isDistrictReport && <Text>Total ({t('expenses')}): {parseFloat(props.totalExpenses).toLocaleString('en-US', { style: 'currency', currency: 'USD'})} </Text>}
-				{ props.isDistrictReport && <Text>Total ({t('tithes')}): {(parseFloat(props.totalDonations) * .1).toLocaleString('en-US', { style: 'currency', currency: 'USD'})} </Text>}
+				<Text>{props.isDistrictReport ? "Net: " : "Total: "} {formatToCurrency(parseFloat(props.total))}</Text>
+				{props.reportType === 'detailed' && <Text>{t('total_tithes_offerings')}: {formatToCurrency(getTotalTithesOfferings())}</Text> }
+				{props.reportType === 'detailed' && <Text> 10%: {formatToCurrency(getTotalTithesOfferings()*.1)}</Text> }
+				{ props.isDistrictReport && <Text>Total ({t('income')}): {formatToCurrency(parseFloat(props.totalDonations))} </Text>}
+				{ props.isDistrictReport && <Text>Total ({t('expenses')}): {formatToCurrency(parseFloat(props.totalExpenses))} </Text>}
+				{ props.isDistrictReport && <Text>Total ({t('tithes')}): {formatToCurrency(parseFloat(props.totalDonations) * .1)} </Text>}
 			</View>
 
 			{props.reportType === 'detailed' && 

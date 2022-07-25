@@ -8,14 +8,15 @@ import { format, isToday } from 'date-fns'
 import { updateDonation } from '../../firebase/donationRequests'
 import { Check, Edit, TrashX } from 'tabler-icons-react'
 import { useTranslation } from 'react-i18next'
-
+import ConfirmationModal from '../shared/ConfirmationModal';
 
 function DonationTableEditableRow(props) {
 	const { t } = useTranslation();
 	const [donationData, setDonationData] = useState([]);
 	const [id,setId] = useState('');
 	const [isEditing, setIsEditing] = useState(false);
-
+	const [isConfirmationModal, setIsConfirmationModal] = useState(false)
+	
 	const updateDonationData = (newData) => {
 		// console.log(newData)
 		setDonationData(data => ({
@@ -67,6 +68,13 @@ function DonationTableEditableRow(props) {
 
 	return (
 		<tr key={id}>
+			<ConfirmationModal 
+				opened={isConfirmationModal}
+				setOpened={setIsConfirmationModal}
+				confirmFunction={() => props.deleteDonation(id)}
+				text={t('are_you_sure_delete')}
+				confirmText={t('delete_row')}
+			/>
 			{ isEditing ? (
 			<td>
 				<DatePicker placeholder='Pick Date'
@@ -151,7 +159,7 @@ function DonationTableEditableRow(props) {
 						<Edit size={16} />
 					</ActionIcon>
 					<ActionIcon 
-						onClick={() => props.deleteDonation(id)}
+						onClick={() => setIsConfirmationModal(true)}
 						variant="light"
 						color="red"
 					><TrashX /></ActionIcon>
