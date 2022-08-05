@@ -45,7 +45,6 @@ function DonationEntry(props) {
 	  setDonor('');
 	  setDonorName('');
 	  setDonationType('');
-	  setSource('');
 	  setAmount(0);
 	};
 

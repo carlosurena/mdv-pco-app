@@ -24,7 +24,7 @@ export const getDonations = async (startDate = null, endDate = null, options = {
 		console.log(options.sources)
 		donationsRef = donationsRef.where('source', 'in', options.sources);
 	}
-	donationsRef = donationsRef.orderBy('date', 'desc');
+	donationsRef = donationsRef.orderBy('date', 'desc').orderBy('donor_name');
 
 	return donationsRef.get().then(donations => {
 		let typetotals = {}
@@ -197,7 +197,7 @@ export const getDonationsByDateAndPerson = async (ids,startDate,endDate) => {
 		.where('date', '>=', startDate)
 		.where('date','<=',endDate)
 		.where('campus_code','==', campusCode)
-		.orderBy('date', 'desc'); //.where('date', '>=', startDate).where(date, '<=', endDate)
+		.orderBy('date', 'desc').orderBy('donor_name');
 	return donationsRef.get().then(donations => {
 		var data = donations.docs.map(doc => {
 			return {
@@ -255,7 +255,7 @@ export const getDonationTotalsAggregate = async (startDate = null, endDate = nul
 	let donationsRef = db.collection('donations')
 		.where('date', '>=', startDate)
 		.where('date','<=',endDate)
-		.where('campus_code','==', campusCode);
+		.where('campus_code','==', campusCode).orderBy('date','desc').orderBy('donor_name');
 	
 	let total = 0;
 	return donationsRef.get().then( donations => {

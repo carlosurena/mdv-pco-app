@@ -44,7 +44,7 @@ function DonationsPage(props) {
 		}
 			
 		
-		const unsubscribe = db.collection('donations').where("campus_code","==",getCookie("campus_code")).orderBy('date', 'desc').onSnapshot(snap => {
+		const unsubscribe = db.collection('donations').where("campus_code","==",getCookie("campus_code")).orderBy('date', 'desc').orderBy('donor_name').onSnapshot(snap => {
 			const data = snap.docs.map(doc => doc.data())
 			setDonationData(data)
 		  });

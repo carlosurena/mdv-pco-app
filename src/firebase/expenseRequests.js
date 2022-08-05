@@ -23,7 +23,7 @@ export const getExpenses = async (startDate = null, endDate = null, options = {}
 	if(options.method != null && options.method.length > 0){
 		expensesRef = expensesRef.where('method', 'in', options.method);
 	}
-	expensesRef = expensesRef.orderBy('date', 'desc');
+	expensesRef = expensesRef.orderBy('date', 'desc').orderBy('expense_type');
 
 	return expensesRef.get().then(expenses => {
 		let typetotals = {}
@@ -250,7 +250,7 @@ export const getExpenseTotalsAggregate = async (startDate = null, endDate = null
 	let expensesRef = db.collection('expenses')
 		.where('date', '>=', startDate)
 		.where('date','<=',endDate)
-		.where('campus_code', '==', campusCode);
+		.where('campus_code', '==', campusCode).orderBy('date', 'desc').orderBy('expense_type');
 
 	
 	let total = 0;

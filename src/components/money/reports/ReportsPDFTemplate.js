@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
 			<View>
 				<Text>Breakdown</Text>
 			</View>
-		  <View style={styles.table}>
+		 { props.typeTotals && props.typeTotals.length > 0 &&  <View style={styles.table}>
 				<Text>{props.isExpense ? t('totals_by_expense_type') : t('totals_by_donation_type')}</Text>
 				<Table data={props.typeTotals}>
 					<TableBody>
@@ -133,8 +133,9 @@ const styles = StyleSheet.create({
 					<DataTableCell getContent={(r) => r.value.toLocaleString('en-US', { style: 'currency', currency: 'USD'})} />
 					</TableBody>
 				</Table>
-			</View>
-			<View style={styles.table}>
+			</View> 
+			}
+			{((props.methodTotals && props.methodTotals.length > 0)  || (props.sourceTotals && props.sourceTotals.length > 0) ) && <View style={styles.table}>
 				<Text>{props.isExpense ? t('totals_by_method') : t('totals_by_source')}</Text>
 				<Table data={props.isExpense ? props.methodTotals : props.sourceTotals}>
 					<TableBody>
@@ -142,13 +143,23 @@ const styles = StyleSheet.create({
 					<DataTableCell getContent={(r) => r.value.toLocaleString('en-US', { style: 'currency', currency: 'USD'})} />
 					</TableBody>
 				</Table>
-			</View>
+			</View>}
 
 			<View style={styles.table}>
 				<Text>{t('attendance')}</Text>
 				<Table data={attendanceRows}>
+					<TableHeader textAlign='center'>
+						<TableCell>{t('')}</TableCell>
+						<TableCell>{t('wednesday')}</TableCell>
+						<TableCell>9:30AM</TableCell>
+						<TableCell>12:00PM</TableCell>
+						<TableCell>Total</TableCell>
+					</TableHeader>
 					<TableBody>
 						<DataTableCell style={styles.rowHeightLg} getContent={(r) => r.label} />
+						<DataTableCell getContent={(r) => ''} />
+						<DataTableCell getContent={(r) => ''} />
+						<DataTableCell getContent={(r) => ''} />
 						<DataTableCell getContent={(r) => ''} />
 					</TableBody>
 				</Table>

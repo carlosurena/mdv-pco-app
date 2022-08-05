@@ -12,7 +12,7 @@ function ReportsTemplate(props) {
 			{element.dayOfWeek && <td>{element.dayOfWeek}</td>} 
 			{element.donor_name && <td>{element.donor_name}</td>} 
 			{element.expense_type && <td>{element.expense_type}</td>}
-			{element.expense_type && <td>{element.method}</td>}
+			{element.method && <td>{element.method}</td>}
 			{element.donation_type && <td>{element.donation_type}</td>} 
 			{element.source && <td>{element.source}</td>} 
 			{element.amount && <td>{parseFloat(element.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</td>}

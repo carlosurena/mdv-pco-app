@@ -43,7 +43,7 @@ function ExpensesPage(props) {
 		}
 			
 		
-		const unsubscribe = db.collection('expenses').where("campus_code", "==", getCookie("campus_code")).orderBy('date', 'desc').onSnapshot(snap => {
+		const unsubscribe = db.collection('expenses').where("campus_code", "==", getCookie("campus_code")).orderBy('date', 'desc').orderBy('expense_type').onSnapshot(snap => {
 			const data = snap.docs.map(doc => doc.data())
 			setExpenseData(data)
 		  });
