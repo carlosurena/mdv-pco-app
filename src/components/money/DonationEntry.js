@@ -42,8 +42,6 @@ function DonationEntry(props) {
 	};
 	
 	const clearState = () => {
-	  setDonor('');
-	  setDonorName('');
 	  setDonationType('');
 	  setAmount(0);
 	};
