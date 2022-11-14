@@ -72,5 +72,9 @@
 	"delete_row": "Delete Row",
 	"total_tithes_offerings": "Total (only Tithes and Offerings)",
 	"home": "Home",
-	"wednesday": "Wednesday"
+	"wednesday": "Wednesday",
+	"filter": "Filter",
+	"apply" : "Apply Changes",
+	"filter_options": "Filter Options",
+	"filters_on": "Filters are ON"
 }

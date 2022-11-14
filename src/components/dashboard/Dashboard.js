@@ -4,6 +4,7 @@ import MembershipWidget from './MembershipWidget'
 import UpcomingBirthdaysWidget from './UpcomingBirthdaysWidget'
 import axios from 'axios'
 import { getCookie } from '../../utils/cookieUtils'
+import IncomeWidget from './IncomeWidget'
 
 
 export class Dashboard extends Component {
@@ -16,8 +17,8 @@ export class Dashboard extends Component {
         birthdays: null,
     }
     componentDidMount() {
-        this.getStats();
-        this.getUpcomingBirthdays()
+        // this.getStats();
+        // this.getUpcomingBirthdays()
     }
 
     //fetches user-made upcoming birthday list (next 6 months) from PCO's List api
@@ -72,9 +73,10 @@ export class Dashboard extends Component {
                 {(this.state.isFetching ? (<p>Loading..</p>) :
                     (
                         <div>
-                            <DemographicsWidget stats={this.state.stats} />
+                            {/* <DemographicsWidget stats={this.state.stats} />
                             <MembershipWidget stats={this.state.stats} />
-                            <UpcomingBirthdaysWidget birthdays={this.state.birthdays} />
+                            <UpcomingBirthdaysWidget birthdays={this.state.birthdays} /> */}
+							<IncomeWidget />
                         </div>
                     ))}
             </div>
