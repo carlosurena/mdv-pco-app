@@ -113,7 +113,7 @@ function SettingsPage(props) {
         confirmText={t("delete_row")}
       />
       <h1>{t("settings")}</h1>
-      <Tabs>
+      <Tabs defaultValue="delete">
         <Tabs.List>
           <Tabs.Tab value="delete" icon={<ListIcon size={14} />}>
             {t("delete_options")}
