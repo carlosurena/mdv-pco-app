@@ -4,7 +4,8 @@
   "private": true,
   "dependencies": {
     "@david.kucsai/react-pdf-table": "^0.4.1",
-	"@emotion/cache":"^11.10.5",
+	"@emotion/cache": "^11.10.5",
+	"@emotion/react": "^11.10.5",
     "@mantine/core": "^5.7.0",
     "@mantine/dates": "^5.7.0",
     "@mantine/form": "^5.7.0",
