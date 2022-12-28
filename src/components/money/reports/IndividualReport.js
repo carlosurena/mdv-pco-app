@@ -109,10 +109,14 @@ function IndividualReport(props) {
       </Modal>
       {donationData && donationData.length > 0 ? (
         <div>
-          <ReportsTemplate title={title} data={donationData} total={total} />
+          <ReportsTemplate
+            title={customTitle ?? title}
+            data={donationData}
+            total={total}
+          />
           <PDFViewer className="pdf-viewer">
             <ReportsPDFTemplate
-              title={title}
+              title={customTitle ?? title}
               dates={dates}
               data={donationData}
               total={total}
