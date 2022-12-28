@@ -110,13 +110,13 @@ function IndividualReport(props) {
       {donationData && donationData.length > 0 ? (
         <div>
           <ReportsTemplate
-            title={customTitle ?? title}
+            title={!!customTitle ? customTitle : title}
             data={donationData}
             total={total}
           />
           <PDFViewer className="pdf-viewer">
             <ReportsPDFTemplate
-              title={customTitle ?? title}
+              title={!!customTitle ? customTitle : title}
               dates={dates}
               data={donationData}
               total={total}
@@ -125,7 +125,7 @@ function IndividualReport(props) {
           <PDFDownloadLink
             document={
               <ReportsPDFTemplate
-                title={customTitle ?? title}
+                title={!!customTitle ? customTitle : title}
                 dates={dates}
                 data={donationData}
                 total={total}
