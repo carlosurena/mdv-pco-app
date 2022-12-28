@@ -76,6 +76,8 @@
 	"filter": "Filtrar",
 	"apply" : "Aplicar Cambios",
 	"filter_options": "Opciones de Filtro",
-	"filters_on": "Filtros estan ACTIVOS"
+	"filters_on": "Filtros estan ACTIVOS",
+	"custom_title": "Titulo Especial"
+
 
 }

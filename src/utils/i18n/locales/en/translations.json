@@ -76,5 +76,6 @@
 	"filter": "Filter",
 	"apply" : "Apply Changes",
 	"filter_options": "Filter Options",
-	"filters_on": "Filters are ON"
+	"filters_on": "Filters are ON",
+	"custom_title": "Custom Title"
 }
