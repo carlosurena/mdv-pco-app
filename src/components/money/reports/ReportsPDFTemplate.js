@@ -303,7 +303,7 @@ export function ReportsPDFTemplate(props) {
             {props.isDistrictReport ? "Net: " : "Total: "}{" "}
             {formatToCurrency(parseFloat(props.total))}
           </Text>
-          {props.reportType === "detailed" && (
+          {props.reportType === "detailed" && !props.isExpense && (
             <Text>
               {t("total_tithes_offerings")}:{" "}
               {formatToCurrency(getTotalTithesOfferings())}
@@ -311,7 +311,6 @@ export function ReportsPDFTemplate(props) {
           )}
           {props.reportType === "detailed" && (
             <Text>
-              {" "}
               10%: {formatToCurrency(getTotalTithesOfferings() * 0.1)}
             </Text>
           )}
