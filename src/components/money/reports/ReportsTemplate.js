@@ -1,5 +1,5 @@
 import React from "react";
-import { format, toDate } from "date-fns";
+import { format } from "date-fns";
 import { Table } from "@mantine/core";
 import { CaretUp, CaretDown } from "tabler-icons-react";
 import { useTranslation } from "react-i18next";

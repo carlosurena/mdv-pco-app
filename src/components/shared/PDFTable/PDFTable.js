@@ -17,6 +17,7 @@ const PDFTable = ({ data, showHeader, customHeader, isDistrictReport }) => {
   const [dataTypes, setDataTypes] = useState([]);
   useEffect(() => {
     getHeaders();
+		// eslint-disable-next-line
   }, []);
 
   const getHeaders = () => {

@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { getCookie } from "../../utils/cookieUtils";
-import IncomeWidget from "./IncomeWidget";
+// import IncomeWidget from "./IncomeWidget";
+import DonationExpenseCardChart from "./DonationExpenseChartCard";
 
 export class Dashboard extends Component {
   state = {
     //All org stats retrieved from PCO
     stats: null,
-    isFetching: true,
+    isFetching: false,
     isFetchingBD: true,
     birthdays: null,
   };
@@ -81,7 +82,8 @@ export class Dashboard extends Component {
             {/* <DemographicsWidget stats={this.state.stats} />
                             <MembershipWidget stats={this.state.stats} />
                             <UpcomingBirthdaysWidget birthdays={this.state.birthdays} /> */}
-            <IncomeWidget />
+            {/* <IncomeWidget /> */}
+			<DonationExpenseCardChart />
           </div>
         )}
       </div>

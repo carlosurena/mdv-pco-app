@@ -17,6 +17,7 @@ import {
 } from "./pco/requests";
 import { LogOutPage } from "./components/auth/authStates";
 import SettingsPage from "./components/money/SettingsPage";
+import Dashboard from "./components/dashboard/Dashboard";
 
 function App() {
   const auth = useProvideAuth();
@@ -45,6 +46,11 @@ function App() {
                     exact
                     path="/"
                     component={() => <DonationsPage auth={auth} />}
+                  />
+				  <PrivateRoute
+                    exact
+                    path="/dashboard"
+                    component={() => <Dashboard auth={auth} />}
                   />
                   {/* <Route exact path="/checkins" component={Checkins} /> */}
                   {/* <Route exact path="/people" component={People} /> */}
