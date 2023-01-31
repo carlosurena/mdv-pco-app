@@ -5,10 +5,10 @@ import { isToday } from "date-fns";
 import { Modal, Button, Indicator, TextInput } from "@mantine/core";
 import { DateRangePicker } from "@mantine/dates";
 import { getAllPeopleReshaped } from "../../../pco/requests";
-import { PDFViewer, PDFDownloadLink } from "@react-pdf/renderer";
-import { ReportsPDFTemplate } from "./ReportsPDFTemplate";
+import { PDFViewer } from "@react-pdf/renderer";
 import { useTranslation } from "react-i18next";
 import MDVMultiSelect from "../../shared/MDVMultiSelect";
+import { PDFTemplate } from "./PDFTemplate";
 
 function IndividualReport(props) {
   const { t } = useTranslation();
@@ -115,32 +115,14 @@ function IndividualReport(props) {
             total={total}
           />
           <PDFViewer className="pdf-viewer">
-            <ReportsPDFTemplate
+            <PDFTemplate
               title={!!customTitle ? customTitle : title}
               dates={dates}
               data={donationData}
               total={total}
+              campus={"Manantial de Vida"}
             />
           </PDFViewer>
-          <PDFDownloadLink
-            document={
-              <ReportsPDFTemplate
-                title={!!customTitle ? customTitle : title}
-                dates={dates}
-                data={donationData}
-                total={total}
-              />
-            }
-            fileName="report"
-          >
-            {({ loading }) =>
-              loading ? (
-                <Button disabled>{t("loading")}</Button>
-              ) : (
-                <Button>{t("download")}</Button>
-              )
-            }
-          </PDFDownloadLink>
         </div>
       ) : (
         <div></div>
